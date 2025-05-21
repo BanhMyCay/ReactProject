@@ -63,19 +63,22 @@ export const useLogin = () => {
        */ 
       dispatch({ type: 'LOGIN', payload: res.user })
 
-      if (!isCancelled) {
-        setIsPending(false)
-        setError(null)
+      /** cleanup funtion chưa kích hoạt, thực hiện thay đổi các biến trạng thái */ 
+      if (!isCancelled) {       
+        setIsPending(false)     // tắt cờ báo đang làm việc với firebase
+        setError(null)          // clear components chuỗi ký tự báo lỗi
       }
     } 
-    catch(err) {
-      if (!isCancelled) {
-        setError(err.message)
-        setIsPending(false)
+    catch(err) {                // có lỗi khi chạy hàm
+      /** cleanup funtion chưa kích hoạt, thực hiện thay đổi các biến trạng thái */ 
+      if (!isCancelled) {       
+        setError(err.message)   // lưu lại lỗi vào components error
+        setIsPending(false)     // tắt cờ báo đang làm việc với firebase
       }
     }
   }
 
+  /** hooks useEffect để thực hiện việc bật cờ báo sử dụng cleanup funtion cho hàm bất đồng bộ */
   useEffect(() => {
     return () => setIsCancelled(true)
   }, [])

@@ -28,7 +28,7 @@ export const AuthContext = createContext()
 
 
 /** -------------------------------------------------------------------------- 
-  @COMPONENT_FUNCTIONs -------------------------------------------------------
+  @COMPONENT_FUNCTIONS -------------------------------------------------------
 --------------------------------------------------------------------------- */
 /**   hàm thay đổi giá trị component chứ thông tin xác minh người dùng 
  * @state     component cần thay đổi (gắn với hook useReducer)

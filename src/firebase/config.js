@@ -50,8 +50,11 @@ const projectFirestore = firebase.firestore()
 /** component kết nối với dịch vụ xác minh người dùng (authentication) của firebase */
 const projectAuth = firebase.auth()
 
-/** export component ra ngoài file */
-export { projectFirestore, projectAuth }
+/** component kết nối với timestamp của dịch vụ lưu trữ (firestore) của firebase  */
+const timestamp = firebase.firestore.Timestamp
+
+/** export component ra ngoài */
+export { projectFirestore, projectAuth, timestamp }
 
 
 
