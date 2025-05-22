@@ -33,12 +33,12 @@ import 'firebase/auth'                                // dịch vụ xác minh n
  * @appId
  */
 const firebaseConfig = {
-  apiKey: "AIzaSyC8LLLF3YsQSJU0-A0OU2wh4mrW9lj614w",
-  authDomain: "mymoney-9106f.firebaseapp.com",
-  projectId: "mymoney-9106f",
-  storageBucket: "mymoney-9106f.firebasestorage.app",
-  messagingSenderId: "940236091470",
-  appId: "1:940236091470:web:613b93b4d0768dd803531f"
+  apiKey: "AIzaSyD-0_t3KxUi-tuaKCmxF1WVNpwBkEDraW4",
+  authDomain: "thedojo-c0b0d.firebaseapp.com",
+  projectId: "thedojo-c0b0d",
+  storageBucket: "thedojo-c0b0d.firebasestorage.app",
+  messagingSenderId: "758484797072",
+  appId: "1:758484797072:web:405f16e606784d9a067a15"
 };
 
 /** gọi hàm khởi tạo kết nối firebase sử dụng các config trong component firebaseConfig */

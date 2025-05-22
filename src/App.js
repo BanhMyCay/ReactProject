@@ -30,6 +30,9 @@ import { useAuthContext } from './hooks/useAuthContext'   // Hooks để sủ d�
 /** Custom Components */
 import Navbar from './components/Navbar'                  // Navigation bar
 
+/** Styles */
+import './App.css'
+
 
 
 /** -------------------------------------------------------------------------- 

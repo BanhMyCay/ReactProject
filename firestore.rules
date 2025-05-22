@@ -12,12 +12,8 @@ service cloud.firestore {
     // Make sure to write security rules for your app before that time, or else
     // all client requests to your Firestore database will be denied until you Update
     // your rules
-    match /transactions/{document=**} { // các rules áp dụng cho document thuộc collection 'transactions' 
-      // cho phép các yêu cầu tạo mới nếu đã xác minh tài khoản
-      allow create: if request.auth != null;
-      
-      // cho phép các yêu cầu đọc, xóa từ tài khoản có uid đúng với uid đã tạo the document
-      allow read, delete: if request.auth.uid == resource.data.uid;
+    match /{document=**} {
+      allow read, write: if request.time < timestamp.date(2025, 6, 21);
     }
   }
 }
