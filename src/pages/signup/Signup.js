@@ -1,6 +1,6 @@
 /**
  * @title     Sign up page
- * @brief     Component sign up page of MyMoney project
+ * @brief     Component sign up page of The Dojo project
  * @filename  Signup.js
  ----------------------------------------------------------------------------- 
  * @author
@@ -16,21 +16,19 @@
 /** React components (useState) */
 import { useState } from 'react'
 
-/** Styles */
-import styles from './Signup.module.css'
-
 /** Custom hooks */
 import { useSignup } from '../../hooks/useSignup'               // hooks thực hiện đăng ký người dùng mới
+
+/** Styles */
+import './Signup.css'
 
 
 
 /** -------------------------------------------------------------------------- 
   @COMPONENT_FUNCTIONS -------------------------------------------------------
 --------------------------------------------------------------------------- */
-/**   homepage component
- * @returns None
- */
-export function Signup() {  
+/** Signup page component */
+export default function Signup() {  
 
   const [email, setEmail] = useState('')                        //  components lưu tạm email từ form đăng ký
   const [password, setPassword] = useState('')                  //  components lưu tạm password từ form đăng ký
@@ -60,7 +58,7 @@ export function Signup() {
       {/** thẻ form chứa các input của form đăng ký
        *    @handleSubit            @class sử dụng syles 'signup-form'
        */}
-      <form onSubmit={handleSubmit} className={styles['signup-form']}>
+      <form onSubmit={handleSubmit} className="signup-form">
         
         {/** thẻ h2 chứa tiêu đề của form đăng ký */}
         <h2>sign up</h2>

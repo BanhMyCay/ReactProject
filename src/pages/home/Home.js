@@ -1,6 +1,6 @@
 /**
  * @title     Home page
- * @brief     Component home page of MyMoney project
+ * @brief     Component home page of The Dojo project
  * @filename  Home.js
  ----------------------------------------------------------------------------- 
  * @author
@@ -16,22 +16,18 @@
 /** Custom hooks */
 import { useAuthContext } from '../../hooks/useAuthContext' // Hooks để sủ dụng context chứa xác minh người dùng
 import { useCollection } from '../../hooks/useCollection'   // Hooks liên kết collection trên database của firebase
+
 /** Custom components */
-import TransactionForm from './TransactionForm'             // Transaction form
-import TransactionList from './TransactionList'             // Transaction list
 
 /** Styles */
-import styles from './Home.module.css'
+import './Home.css'
 
 
 
 /** -------------------------------------------------------------------------- 
   @COMPONENT_FUNCTIONS -------------------------------------------------------
 --------------------------------------------------------------------------- */
-/**   Home page component
- * @coponent    Home
- * @returns     None
- */
+/** Home page component */
 export default function Home() {
 
   /** object gồm các component xử lý xác minh người dùng 
@@ -53,28 +49,28 @@ export default function Home() {
     /** thẻ div đại diện home page 
      *   @class sử dụng styles "container"
      */
-    <div className={styles.container}>
+    <div className="container">
 
       {/** thẻ div đại diện component transaction list
         *  @class sử dụng styles "content"
         */}
-      <div className={styles.content}>
+      <div className="content">
         {/** thẻ p hiển thị lỗi nếu có lỗi */}
         {error && <p>{error}</p>}
         {/** nếu có dữ liệu của collection giao dịch, hiển thị TransactionList component 
          * @transactions  components chứa các giao dịch 
         */}
-        {documents && <TransactionList transactions={documents} />}
+
       </div>
 
       {/** thẻ div đại diện component transaction form
         *  @class sử dụng styles "sidebar"
         */}
-      <div className={styles.sidebar}>
+      <div className="sidebar">
         {/**  Transaction component
           *  @uid   user id sử dụng transaction form
           */}
-        <TransactionForm uid={user.uid} />
+
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 /**
  * @title     Login page
- * @brief     Component login page of MyMoney project
+ * @brief     Component login page of The Dojo project
  * @filename  Login.js
  ----------------------------------------------------------------------------- 
  * @author
@@ -20,17 +20,14 @@ import { useState } from 'react'
 import { useLogin } from '../../hooks/useLogin'               // hooks thực hiện đăng nhập tài khoản
 
 /** Styles */
-import styles from './Login.module.css'
+import './Login.css'
 
 
 
 /** -------------------------------------------------------------------------- 
   @COMPONENT_FUNCTIONS -------------------------------------------------------
 --------------------------------------------------------------------------- */
-/**   Login page component
- * @coponent    Login
- * @returns     None
- */
+/** Login page component */
 export default function Login() {
 
   const [email, setEmail] = useState('')                            //  components lưu tạm email từ form đăng nhập
@@ -59,7 +56,7 @@ export default function Login() {
       {/** thẻ form chứa các input của form đăng nhập
        *    @handleSubit            @class sử dụng syles 'login-form'
        */}
-      <form onSubmit={handleSubmit} className={styles['login-form']}>
+      <form onSubmit={handleSubmit} className="login-form">
         
         {/** thẻ h2 chứa tiêu đề của form đăng nhập */}
         <h2>login</h2>

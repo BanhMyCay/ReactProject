@@ -20,15 +20,18 @@ import React from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 
 /** Page components */
-import Home   from './pages/home/Home'                    // Home page
-import Login  from './pages/login/Login'                  // Login page
-import { Signup } from './pages/signup/Signup'            // Sign up page
+import Dashboard from './pages/dashboard/Dashboard'
+import Create from './pages/create/Create'
+import Login from './pages/login/Login'                   // Login page
+import Signup from './pages/signup/Signup'                // Sign up page
+import Project from './pages/project/Project'
 
 /** Custom hooks */
 import { useAuthContext } from './hooks/useAuthContext'   // Hooks để sủ dụng context chứa xác minh người dùng
 
 /** Custom Components */
 import Navbar from './components/Navbar'                  // Navigation bar
+import Sidebar from './components/Sidebar'                // Side bar
 
 /** Styles */
 import './App.css'
@@ -58,7 +61,13 @@ function App() {
 
           {/* kiểm tra lỗi */}
           {/*<React.StrictMode>*/}
-      
+          
+          {/* Sidebar component */}
+          <Sidebar />
+
+          {/* thẻ div chứa nôi dung của App */}
+          <div className="container">
+
             {/* Navbar component */}
             <Navbar />
 
@@ -67,11 +76,21 @@ function App() {
 
               {/** URL exact path: "/" 
                 *  Nếu chưa đăng nhập tài khoản, chuyển hướng URL: "/login"
-                *  Nếu đã đăng nhập tài khoản, mở home page component 
+                *  Nếu đã đăng nhập tài khoản, mở Dashboard page component 
                 */}
               <Route exact path="/">
-                {!user && <Redirect to="/login" />}
-                {user && <Home />}
+                {/*!user && <Redirect to="/login" />*/}
+                {/*user && */<Dashboard />}
+              </Route>
+
+              {/** URL path: "/create" mở create page component */}
+              <Route path="/create">
+                <Create />
+              </Route>
+
+              {/** URL path: "/projects/:id" mở project page component theo id */}
+              <Route path="/projects/:id">
+                <Project />
               </Route>
 
               {/** URL path: "/login" 
@@ -95,6 +114,7 @@ function App() {
             </Switch>
 
           {/*</React.StrictMode>*/} 
+          </div>
 
         </BrowserRouter>
       )}

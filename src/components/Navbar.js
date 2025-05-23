@@ -21,16 +21,17 @@ import { useLogout } from '../hooks/useLogout'                // Hooks để th�
 import { useAuthContext } from '../hooks/useAuthContext'      // Hooks để sủ dụng context chứa xác minh người dùng
 
 /** Styles */
-import styles from './Navbar.module.css'
+import './Navbar.css'
+
+/** Images */
+import Temple from '../assets/temple.svg'                     // logo project
 
 
 
 /** -------------------------------------------------------------------------- 
   @COMPONENT_FUNCTIONS -------------------------------------------------------
 --------------------------------------------------------------------------- */
-/**   Navigation bar component
- * @returns None
- */
+/** Navigation bar component */
 export default function Navbar() {
   /**   object các components của custom hook (useSignup)
    * @Ret1  logout    - hàm thực hiện đăng xuất tài khoản
@@ -46,14 +47,22 @@ export default function Navbar() {
     /** thẻ div đại diện Navbar component 
      *   @class riêng cho style
      */
-    <nav className={styles.navbar}>
+    <nav className="navbar">
 
       {/** thẻ ul chứa các thẻ li của Navbar */}
       <ul>
         {/** thẻ li chứa tiêu đề của Navbar 
          *  @class riêng cho style
          */}
-        <li className={styles.title}><Link to="/">myMoney</Link></li>
+        <li className="logo">
+          {/** thẻ img chứa ảnh logo của Navbar 
+           * @src nguồn ảnh
+           * @alt tiêu đề ảnh
+           */}
+          <img src={Temple} alt="dojo logo" />
+          {/** thẻ span chứa tiêu đề của Navbar */}
+          <span><Link to="/">The Dojo</Link></span>
+        </li>
         
         {/** chỉ hiển thị các thẻ sau nếu chưa có thông tin xác minh người dùng */}
         {!user && (
