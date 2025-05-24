@@ -33,7 +33,7 @@ export default function Ceate() {
   return (
     /** thẻ div đại diện create page */
     <div>
-
+      Create
     </div>
   )
 }

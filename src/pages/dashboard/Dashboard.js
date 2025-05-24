@@ -33,7 +33,7 @@ export default function Dashboard() {
   return (
     /** thẻ div đại diện Dashboard page */
     <div>
-
+        Dashboard
     </div>
   )
 }

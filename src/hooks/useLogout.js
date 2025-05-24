@@ -16,8 +16,8 @@
 /** React hooks (useState, useEffect) */
 import { useState, useEffect } from 'react'
 
-/** Firebase component (authentication) */
-import { projectAuth } from '../firebase/config'                
+/** Firebase component (authentication, firestore) */
+import { projectAuth, projectFirestore } from '../firebase/config'                
 
 /** Custom hooks */
 import { useAuthContext } from './useAuthContext'               // Hooks để sủ dụng context chứa xác minh người dùng
@@ -51,6 +51,14 @@ export const useLogout = () => {
     setIsPending(true)          // bật cờ báo đang làm việc với firebase
   
     try {
+      /** object chứa thông tin người dùng hiện tại */
+      const { uid } = projectAuth.currentUser
+
+      /**   hàm update thuộc tính của document với id của người dùng thuộc collection users trên firestore
+       * @online  trạng thái online
+       */ 
+      await projectFirestore.collection('users').doc(uid).update({ online: false })
+
       /**   hàm đăng xuất tài khoản của dịch vụ firebase authentication
        * @res   component liên kết với thông tin tài khoản trên firebase
        */ 

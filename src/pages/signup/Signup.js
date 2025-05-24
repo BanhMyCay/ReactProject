@@ -30,9 +30,11 @@ import './Signup.css'
 /** Signup page component */
 export default function Signup() {  
 
-  const [email, setEmail] = useState('')                        //  components lưu tạm email từ form đăng ký
-  const [password, setPassword] = useState('')                  //  components lưu tạm password từ form đăng ký
-  const [displayName, setDisplayName] = useState('')            //  components lưu tạm display name từ form đăng ký
+  const [email, setEmail] = useState('')                        // components lưu tạm email từ form đăng ký
+  const [password, setPassword] = useState('')                  // components lưu tạm password từ form đăng ký
+  const [displayName, setDisplayName] = useState('')            // components lưu tạm display name từ form đăng ký
+  const [thumbnail, setThumbnail] = useState(null)              // components chứa tạm avatar
+  const [thumbnailError, setThumbnailError] = useState(null)    // components lưu tạm lỗi khi chọn avatar
 
   /**   object các components của custom hook (useSignup)
    * @Ret1  signup    - hàm thực hiện đăng ký tài khoản mới
@@ -48,7 +50,33 @@ export default function Signup() {
     e.preventDefault()                          // ngăn xử lý mặc định của sự kiện (reload pages)
 
     /** hàm thực hiện đăng ký tài khoản mới sử dụng dịch vụ firebase authentication */
-    signup(email, password, displayName)
+    signup(email, password, displayName, thumbnail)
+  }
+
+  /**   hàm xử lý sự kiện khi chọn file cho ảnh avatar
+   * @e    sự kiện xảy ra hàm
+   */
+  const handleFileChange = (e) => {
+    setThumbnail(null)                // clear component tạm chứa avatar
+    let selected = e.target.files[0]  // component chứa file vừa chọn
+    console.log(selected)             // log lại component
+
+    if (!selected) {                  // không có file, báo lỗi
+      setThumbnailError('Please select a file')
+      return
+    }
+    if (!selected.type.includes('png' && 'jpeg')) { // không phải file ảnh, báo lỗi
+      setThumbnailError('Selected file must be an image')
+      return
+    }
+    if (selected.size > 100000) {     // kích thước file lớn, báo lỗi
+      setThumbnailError('Image file size must be less than 100kb')
+      return
+    }
+    
+    setThumbnailError(null)           // clear components lưu lỗi
+    setThumbnail(selected)            // lưu file ảnh vào component
+    console.log('thumbnail updated')  // log đã chọn file ảnh
   }
 
   return (
@@ -58,7 +86,7 @@ export default function Signup() {
       {/** thẻ form chứa các input của form đăng ký
        *    @handleSubit            @class sử dụng syles 'signup-form'
        */}
-      <form onSubmit={handleSubmit} className="signup-form">
+      <form onSubmit={handleSubmit} className="auth-form">
         
         {/** thẻ h2 chứa tiêu đề của form đăng ký */}
         <h2>sign up</h2>
@@ -116,15 +144,35 @@ export default function Signup() {
             required
           />
         </label>
-              
+
+        {/** thẻ label đại diện lựa chọn ảnh avatar */}    
+        <label>
+          {/** thẻ span chứa tiêu đề ô input ảnh avatar */}
+          <span>profile thumbnail:</span>
+          {/** thẻ input chọn ảnh avatar
+           * @type      loại input file ảnh
+           * @onChange  khi input thay đổi sẽ xử lý file đã chọn
+          */}
+          <input 
+            type="file" 
+            onChange={handleFileChange}
+          />
+          {/** thẻ div báo lỗi khi có lỗi
+           *                      @class
+           */}
+          {thumbnailError && <div className="error">{thumbnailError}</div>}
+        </label>
+
         {/** thẻ button nút đăng ký, chỉ click được khi không làm việc với database (isPending)
          *                      @class
         */}
         { !isPending && <button className="btn">sign up</button> }
         { isPending &&  <button className="btn" disabled>loading</button> }
         
-        {/** thẻ p hiển thị lỗi nếu có lỗi (component error) */}
-        { error && <p>{error}</p> }
+        {/** thẻ p hiển thị lỗi nếu có lỗi (component error) 
+         *             @class
+         */}
+        {error && <div className="error">{error}</div>}
 
       </form>
 

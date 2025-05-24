@@ -79,18 +79,27 @@ function App() {
                 *  Nếu đã đăng nhập tài khoản, mở Dashboard page component 
                 */}
               <Route exact path="/">
-                {/*!user && <Redirect to="/login" />*/}
-                {/*user && */<Dashboard />}
+                {!user && <Redirect to="/login" />}
+                {user && <Dashboard />}
               </Route>
 
-              {/** URL path: "/create" mở create page component */}
+
+              {/** URL path: "/create" mở create page component 
+                *  Nếu chưa đăng nhập tài khoản, chuyển hướng URL: "/login"
+                *  Nếu đã đăng nhập tài khoản, mở create page component 
+                */}
               <Route path="/create">
-                <Create />
+                {!user && <Redirect to="/login" />}
+                {user && <Create />}
               </Route>
 
-              {/** URL path: "/projects/:id" mở project page component theo id */}
+              {/** URL path: "/projects/:id" mở project page component theo id 
+                *  Nếu chưa đăng nhập tài khoản, chuyển hướng URL: "/login"
+                *  Nếu đã đăng nhập tài khoản, mở project page component 
+                */}
               <Route path="/projects/:id">
-                <Project />
+                {!user && <Redirect to="/login" />}
+                {user && <Project />}
               </Route>
 
               {/** URL path: "/login" 

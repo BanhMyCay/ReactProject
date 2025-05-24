@@ -17,7 +17,7 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'                           // dịch vụ hỗ trợ lưu trữ 
 import 'firebase/auth'                                // dịch vụ xác minh người dùng
-
+import 'firebase/storage'                             // dịch vụ lưu trữ file
 
 
 
@@ -53,8 +53,11 @@ const projectAuth = firebase.auth()
 /** component kết nối với timestamp của dịch vụ lưu trữ (firestore) của firebase  */
 const timestamp = firebase.firestore.Timestamp
 
+/** component kết nối với dịch vụ lưu trữ file (storage) của firebase */
+const projectStorage = firebase.storage()
+
 /** export component ra ngoài */
-export { projectFirestore, projectAuth, timestamp }
+export { projectFirestore, projectAuth, timestamp, projectStorage }
 
 
 

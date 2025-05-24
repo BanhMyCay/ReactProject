@@ -16,8 +16,8 @@
 /** React hooks (useState, useEffect) */
 import { useState, useEffect } from 'react'
 
-/** Firebase component (authentication) */
-import { projectAuth } from '../firebase/config'                
+/** Firebase component (authentication, storage, firestore) */
+import { projectAuth, projectStorage, projectFirestore } from '../firebase/config'                
 
 /** Custom hooks */
 import { useAuthContext } from './useAuthContext'               // Hooks để sủ dụng context chứa xác minh người dùng
@@ -46,12 +46,15 @@ export const useSignup = () => {
    * @Arg1  email       tên đăng nhập (sử dụng email)
    * @Arg2  password    mật khẩu đăng nhập
    * @Arg3  displayName tên trên react app
+   * @Arg4  thumbnail   file ảnh avatar
    * @note  @async và @await để sử dụng các hàm bất đồng bộ khi làm việc với backend
    */
-  const signup = async (email, password, displayName) => { 
+  const signup = async (email, password, displayName, thumbnail) => { 
     setError(null)              // clear components chuỗi ký tự báo lỗi
     setIsPending(true)          // bật cờ báo đang làm việc với firebase
   
+    let photoURL = null         // component chứa URL của ảnh
+
     try {
       /**   hàm tạo tài khoản mới với email và password của dịch vụ firebase authentication
        * @res   component liên kết với thông tin tài khoản trên firebase
@@ -63,10 +66,44 @@ export const useSignup = () => {
         throw new Error('Could not complete signup')
       }
 
+      /** upload file thumbnails */
+      if(thumbnail) { 
+        // try {
+        //   /** component chứa thông tin folder lưu trữ file */
+        //   const uploadPath = `thumbnails/${res.user.uid}/${thumbnail.name}`
+
+        //   /**   hàm up file thumbnail lên storage của firebase
+        //    * @img component liên kết với thông tin file up lên storage của firebase
+        //    */
+        //   const img = await projectStorage.ref(uploadPath).put(thumbnail)
+
+        //   /**   hàm lấy URL của file trên storage của firebase
+        //    * @photoURL  component liên kết với URL của file trên storage
+        //    */
+        //   photoURL = await img.ref.getDownloadURL()
+        // } 
+        // catch (uploadErr) { // lỗi storage, log lỗi
+        //   console.error('Lỗi upload ảnh:', uploadErr.message)
+        // }
+      }
+
       /**   hàm cập nhật thông tin tài khoản của dịch vụ firebase authentication
        * @res   component liên kết với thông tin tài khoản trên firebase
        */
-      await res.user.updateProfile({ displayName })
+      await res.user.updateProfile({ displayName, photoURL })
+
+      /**   hàm tạo document mới với id người tạo trên colection users của firestore với object thuộc tính như sau
+       * @online      trạng thái người dùng
+       * @displayName tên người dùng
+       * @photoURL    link ảnh avatar trên storage của firebase
+       */ 
+      // create a user document
+      await projectFirestore.collection('users').doc(res.user.uid).set({ 
+        online: true,
+        displayName,
+        photoURL,
+      })
+
 
       /**   hàm thay đổi global component chứa thông tin xác mình người dùng
        * @{}  object action cho hàm

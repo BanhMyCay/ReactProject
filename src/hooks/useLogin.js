@@ -16,8 +16,8 @@
 /** React hooks (useState, useEffect) */
 import { useState, useEffect } from 'react'
 
-/** Firebase component (authentication) */
-import { projectAuth } from '../firebase/config'                
+/** Firebase component (authentication, firestore) */
+import { projectAuth, projectFirestore } from '../firebase/config'                
 
 /** Custom hooks */
 import { useAuthContext } from './useAuthContext'               // Hooks để sủ dụng context chứa xác minh người dùng
@@ -57,6 +57,11 @@ export const useLogin = () => {
        * @res   component liên kết với thông tin tài khoản trên firebase
        */ 
       const res = await projectAuth.signInWithEmailAndPassword(email, password)
+
+      /**   hàm update thuộc tính của document với id của người dùng thuộc collection users trên firestore
+       * @online  trạng thái online
+       */ 
+      await projectFirestore.collection('users').doc(res.user.uid).update({ online: true })
 
       /**   hàm thay đổi global component chứa thông tin xác mình người dùng
        * @{}  object action cho hàm

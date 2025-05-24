@@ -54,9 +54,9 @@ export default function Login() {
     <div>
 
       {/** thẻ form chứa các input của form đăng nhập
-       *    @handleSubit            @class sử dụng syles 'login-form'
+       *    @handleSubit            @class sử dụng syles 'auth-form'
        */}
-      <form onSubmit={handleSubmit} className="login-form">
+      <form onSubmit={handleSubmit} className="auth-form">
         
         {/** thẻ h2 chứa tiêu đề của form đăng nhập */}
         <h2>login</h2>

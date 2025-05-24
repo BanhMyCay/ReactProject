@@ -35,8 +35,9 @@ import Temple from '../assets/temple.svg'                     // logo project
 export default function Navbar() {
   /**   object các components của custom hook (useSignup)
    * @Ret1  logout    - hàm thực hiện đăng xuất tài khoản
+   * @Ret2  isPending - components cờ báo đang làm việc với database
    */
-  const { logout } = useLogout()
+  const { logout, isPending } = useLogout()
 
   /** object gồm các component xử lý xác minh người dùng 
    * @user  global component chứa thông tin xác mình người dùng
@@ -78,15 +79,13 @@ export default function Navbar() {
         {/** chỉ hiển thị các thẻ sau nếu đã có thông tin xác minh người dùng */}
         {user && (
           <>
-            {/** thẻ li chứa thông tin người dùng */}
-            <li>hello, {user.displayName}</li>
-
             {/** thẻ li chứa nút nhấn thực hiện đăng xuất tài khoản */}
             <li>
               {/** thẻ button chứa nút nhấn thực hiện đăng xuất tài khoản
-               *      @class          @handleClick
+               *                     @class          @handleClick
                */}
-              <button className="btn" onClick={logout}>Logout</button>
+              {!isPending && <button className="btn" onClick={logout}>Logout</button>}
+              {isPending && <button className="btn" disabled>Logging out...</button>}
             </li>
           </>
         )}
