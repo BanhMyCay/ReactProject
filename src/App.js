@@ -32,6 +32,7 @@ import { useAuthContext } from './hooks/useAuthContext'   // Hooks để sủ d�
 /** Custom Components */
 import Navbar from './components/Navbar'                  // Navigation bar
 import Sidebar from './components/Sidebar'                // Side bar
+import OnlineUsers from './components/OnlineUsers'        // User list bar
 
 /** Styles */
 import './App.css'
@@ -62,12 +63,11 @@ function App() {
           {/* kiểm tra lỗi */}
           {/*<React.StrictMode>*/}
           
-          {/* Sidebar component */}
-          <Sidebar />
+          {/* Sidebar component, chỉ hiển thị khi đã log in */}
+          {user && <Sidebar />}
 
           {/* thẻ div chứa nôi dung của App */}
           <div className="container">
-
             {/* Navbar component */}
             <Navbar />
 
@@ -124,6 +124,9 @@ function App() {
 
           {/*</React.StrictMode>*/} 
           </div>
+
+          {/* User list bar component, chỉ hiển thị khi đã log in */}
+          {user && <OnlineUsers />}
 
         </BrowserRouter>
       )}

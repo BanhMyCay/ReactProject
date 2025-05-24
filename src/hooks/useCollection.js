@@ -22,14 +22,14 @@ import { projectFirestore } from "../firebase/config"
 
 
 /** -------------------------------------------------------------------------- 
-  @COMPONENT_FUNCTIONS -------------------------------------------------------
+  @CUSTOM_HOOK_FUNCTIONS -----------------------------------------------------
 --------------------------------------------------------------------------- */
 /** Custom hook (useCollection) liên kết collection trên database của firebase
  * @Arg1  collection    - component chứa tên collection cần sử dụng
  * @Arg2  _query        - array chứa yêu cầu properties để truy vấn cụ thể documents của collection
  * @Arg3  _orderBy      - array chứa yêu cầu properties để truy vấn thời gian tạo cụ thể của documents
  * @Ret1  documents     - component chứa các documents của collection
- * @Ret3  error         - component chuỗi ký tự báo lỗi
+ * @Ret2  error         - component chuỗi ký tự báo lỗi
  */
 export const useCollection = (collection, _query, _orderBy) => {
   const [documents, setDocuments] = useState(null)              // component chứa các documents của collection

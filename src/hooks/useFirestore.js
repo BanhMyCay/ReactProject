@@ -1,6 +1,6 @@
 /**
  * @title     useFirestore hook
- * @brief     Custom hooks (useFirestore) để sử dụng dịch vụ database của firebase
+ * @brief     Custom hooks (useFirestore) để sử dụng dịch vụ firestore của firebase
  * @filename  useFirestore.js
  ----------------------------------------------------------------------------- 
  * @author
@@ -56,6 +56,8 @@ const firestoreReducer = (state, action) => {
       return {success: true, isPending: false, error: null, document: action.payload}
     case 'DELETED_DOCUMENT':    // báo hooks vừa xóa một document mới
       return { isPending: false, document: null, success: true, error: null }
+    case "UPDATED_DOCUMENT":    // báo hooks vừa sửa document
+      return { isPending: false, document: action.payload, success: true,  error: null }
     default:
       return state
   }
@@ -63,11 +65,15 @@ const firestoreReducer = (state, action) => {
 
 
 
+/** -------------------------------------------------------------------------- 
+  @CUSTOM_HOOK_FUNCTIONS -----------------------------------------------------
+--------------------------------------------------------------------------- */
 /** Custom hook (useFirestore) để sủ dụng dịch vụ database của Firebase
  * @Arg1  collection        - tên collection cần sử dụng
  * @Ret1  addDocument       - hàm thêm một mục document
  * @Ret2  deleteDocument    - hàm xóa một mục document
- * @Ret3  response          - object respone của hooks
+ * @Ret3  updateDocument    - hàm sửa một mục document
+ * @Ret4  response          - object respone của hooks
 */
 export const useFirestore = (collection) => {
   /**   object chứa respone của hooks sử dụng dịch vụ database sử dụng hook useReducer
@@ -132,7 +138,7 @@ export const useFirestore = (collection) => {
 
     try {
       /**   hàm xóa (delete) một document theo id (doc(id)) trên firestore của firebase 
-       * @deletedDocument  component liên kết document đã xóa trên firestore của firebase
+       * @deletedDocument component liên kết document đã xóa trên firestore của firebase
        */ 
       const deletedDocument = await ref.doc(id).delete()
 
@@ -145,11 +151,40 @@ export const useFirestore = (collection) => {
     }
   }
 
+  /**   hàm thực hiện sửa document sử dụng dịch vụ database
+   * @Arg1  id      - id đại diện document
+   * @Arg2  updates - components chứa document cần update
+   * @Ret1  updatedDocument - component liên kết document đã sửa trên firestore của firebase
+   * @note  @async và @await để sử dụng các hàm bất đồng bộ khi làm việc với backend
+   */
+  const updateDocument = async (id, updates) => {
+    /** thay đổi object respone của hooks về trạng thái đang đang làm việc với database */
+    dispatch({ type: "IS_PENDING" })
+
+    try {
+      /**   hàm sửa (update) một document có id 'id' theo nội dung 'updates' lên firestore của firebase 
+       * @updatedDocument component liên kết document đã sửa trên firestore của firebase
+       */ 
+      const updatedDocument = await ref.doc(id).update(updates)
+
+      /** thay đổi object respone của hooks khi sửa một document */
+      dispatchIfNotCancelled({ type: "UPDATED_DOCUMENT", payload: updatedDocument })
+
+      return updatedDocument
+    } 
+    catch (error) {
+      /** thay đổi object respone của hooks khi gặp lỗi */ 
+      dispatchIfNotCancelled({ type: 'ERROR', payload: 'could not delete' })
+
+      return null
+    }
+  }
+
   /** hooks useEffect để thực hiện việc bật cờ báo sử dụng cleanup funtion cho hàm bất đồng bộ */
   useEffect(() => {
     return () => setIsCancelled(true)
   }, [])
 
-  return { addDocument, deleteDocument, response }
+  return { addDocument, deleteDocument, updateDocument, response }
 
 }

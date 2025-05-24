@@ -10,11 +10,17 @@
 
 
 
- /** -------------------------------------------------------------------------- 
+/** -------------------------------------------------------------------------- 
   @IMPORT --------------------------------------------------------------------
 --------------------------------------------------------------------------- */
 /** React route components (Link) */
 import { NavLink } from "react-router-dom"
+
+/** Custom hooks */
+import { useAuthContext } from '../hooks/useAuthContext'    // hooks sủ dụng context chứa xác minh người dùng
+
+/** Custom component */
+import Avatar from "./Avatar"                               // Avatar
 
 /** Styles */
 import "./Sidebar.css"
@@ -30,6 +36,11 @@ import AddIcon from '../assets/add_icon.svg'                // add icon
 --------------------------------------------------------------------------- */
 /** Side bar component */
 export default function Sidebar() {
+  /** object gồm các component xử lý xác minh người dùng 
+   * @user  global component chứa thông tin xác mình người dùng
+   */
+  const { user } = useAuthContext()
+  
   return (
     /** thẻ div đại diện Sidebar component 
      *   @class riêng cho style
@@ -45,9 +56,13 @@ export default function Sidebar() {
           *  @class riêng cho style
           */}
         <div className="user">
-          {/* avatar & username here later */}
-          <p>Hey user</p>  
+          {/** component avatar
+            *  @src nguồn lấy ảnh
+            */}
+          <Avatar src={user.photoURL} />
+          <p>Hey {user.displayName}</p>  
         </div>  
+         
 
         {/** thẻ nav chứa bảng điều khiển của người dung
           *  @class riêng cho style
