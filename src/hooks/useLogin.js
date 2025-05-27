@@ -18,6 +18,8 @@ import { useState, useEffect } from 'react'
 
 /** Firebase component (authentication, firestore) */
 import { projectAuth, projectFirestore } from '../firebase/config'                
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { doc, updateDoc } from 'firebase/firestore'
 
 /** Custom hooks */
 import { useAuthContext } from './useAuthContext'               // Hooks để sủ dụng context chứa xác minh người dùng
@@ -34,7 +36,6 @@ import { useAuthContext } from './useAuthContext'               // Hooks để s
 */
 export const useLogin = () => {
   const [isCancelled, setIsCancelled] = useState(false)         // component cờ báo sử dụng cleanup funtion cho hàm bất đồng bộ
-  
   const [error, setError] = useState(null)                      // component chuỗi ký tự báo lỗi
   const [isPending, setIsPending] = useState(false)             // component cờ báo đang làm việc với database
 
@@ -56,12 +57,12 @@ export const useLogin = () => {
       /**   hàm đăng nhập tài khoản với email và password của dịch vụ firebase authentication
        * @res   component liên kết với thông tin tài khoản trên firebase
        */ 
-      const res = await projectAuth.signInWithEmailAndPassword(email, password)
+      const res = await signInWithEmailAndPassword(projectAuth, email, password)
 
       /**   hàm update thuộc tính của document với id của người dùng thuộc collection users trên firestore
        * @online  trạng thái online
        */ 
-      await projectFirestore.collection('users').doc(res.user.uid).update({ online: true })
+      await updateDoc(doc(projectFirestore, 'users', res.user.uid), { online: true })
 
       /**   hàm thay đổi global component chứa thông tin xác mình người dùng
        * @{}  object action cho hàm

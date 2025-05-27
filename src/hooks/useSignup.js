@@ -17,10 +17,13 @@
 import { useState, useEffect } from 'react'
 
 /** Firebase component (authentication, storage, firestore) */
-import { projectAuth, projectStorage, projectFirestore } from '../firebase/config'                
+import { projectAuth, projectStorage, projectFirestore } from '../firebase/config'  
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';      // dịch vụ xác minh người dùng
+import { doc, setDoc } from 'firebase/firestore';                                   // dịch vụ hỗ trợ lưu trữ collection                    
 
 /** Custom hooks */
-import { useAuthContext } from './useAuthContext'               // Hooks để sủ dụng context chứa xác minh người dùng
+import { useAuthContext } from './useAuthContext'   // Hooks để sủ dụng context chứa xác minh người dùng
+
 
 
 /** -------------------------------------------------------------------------- 
@@ -59,7 +62,7 @@ export const useSignup = () => {
       /**   hàm tạo tài khoản mới với email và password của dịch vụ firebase authentication
        * @res   component liên kết với thông tin tài khoản trên firebase
        */ 
-      const res = await projectAuth.createUserWithEmailAndPassword(email, password)
+      const res = await createUserWithEmailAndPassword(projectAuth, email, password)
       console.log(res.user)     // log lại thông tin tài khoản
 
       if (!res) {               // res null - đăng ký thất bại, báo lỗi
@@ -90,7 +93,7 @@ export const useSignup = () => {
       /**   hàm cập nhật thông tin tài khoản của dịch vụ firebase authentication
        * @res   component liên kết với thông tin tài khoản trên firebase
        */
-      await res.user.updateProfile({ displayName, photoURL })
+      await updateProfile(res.user, { displayName, photoURL })
 
       /**   hàm tạo document mới với id người tạo trên colection users của firestore với object thuộc tính như sau
        * @online      trạng thái người dùng
@@ -98,12 +101,11 @@ export const useSignup = () => {
        * @photoURL    link ảnh avatar trên storage của firebase
        */ 
       // create a user document
-      await projectFirestore.collection('users').doc(res.user.uid).set({ 
+      await setDoc(doc(projectFirestore, 'users', res.user.uid), { 
         online: true,
         displayName,
         photoURL,
       })
-
 
       /**   hàm thay đổi global component chứa thông tin xác mình người dùng
        * @{}  object action cho hàm

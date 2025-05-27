@@ -13,8 +13,12 @@
 /** -------------------------------------------------------------------------- 
   @IMPORT --------------------------------------------------------------------
 --------------------------------------------------------------------------- */
+/** React component (useEffect, useState) */
 import { useEffect, useState } from "react"
+
+/** Firebase component (firestore) */
 import { projectFirestore } from "../firebase/config"
+import { doc, onSnapshot } from "firebase/firestore";
 
 
 
@@ -37,12 +41,12 @@ export const useDocument = (collection, id) => {
    */
   useEffect(() => {
     /** component liên kết với document có id 'id' trong collection 'collection' */
-    const ref = projectFirestore.collection(collection).doc(id)
+    const ref = doc(projectFirestore, collection, id)
 
     /** hàm theo dõi liên tục (onSnapshot) document, nếu có thay đổi trả về 'snapshot' 
      * @unsubscribe     component để clear function khi component cha mất liên kết
      */
-    const unsubscribe = ref.onSnapshot(snapshot => {
+    const unsubscribe = onSnapshot(ref, (snapshot) => {
       /** nếu có dữ liệu, update component 'document' và clear lỗi */
       if(snapshot.data()) {
         setDocument({...snapshot.data(), id: snapshot.id})

@@ -10,7 +10,7 @@
 
 
 
- /** -------------------------------------------------------------------------- 
+/** -------------------------------------------------------------------------- 
   @IMPORT --------------------------------------------------------------------
 --------------------------------------------------------------------------- */
 /** React components (useEffect, useState, useRef) */
@@ -18,7 +18,13 @@ import { useEffect, useState, useRef } from "react"
 
 /** Firebase component (firestore) */
 import { projectFirestore } from "../firebase/config"
-
+import { 
+  collection, 
+  query as queryFn, 
+  where, 
+  orderBy as orderByFn, 
+  onSnapshot 
+} from "firebase/firestore";
 
 
 /** -------------------------------------------------------------------------- 
@@ -31,7 +37,7 @@ import { projectFirestore } from "../firebase/config"
  * @Ret1  documents     - component chứa các documents của collection
  * @Ret2  error         - component chuỗi ký tự báo lỗi
  */
-export const useCollection = (collection, _query, _orderBy) => {
+export const useCollection = (colName, _query, _orderBy) => {
   const [documents, setDocuments] = useState(null)              // component chứa các documents của collection
   const [error, setError] = useState(null)                      // component chuỗi ký tự báo lỗi
 
@@ -47,14 +53,22 @@ export const useCollection = (collection, _query, _orderBy) => {
    */
   useEffect(() => {
     /** component kết nối với collection sử dụng dịch vụ firestore */
-    let ref = projectFirestore.collection(collection)
+    let ref = collection(projectFirestore, colName)
+
+    /** Tạo mảng điều kiện để truyền vào hàm query */
+    const constraints = [];
     
     /** yêu cầu properties, truy vấn cụ thể các documents thỏa mãn yêu cầu  */
     if (query) {                // chỉ tìm các documents có properties (...query)
-      ref = ref.where(...query)
+      constraints.push(where(...query));
     }
     if (orderBy) {              // sắp xếp theo trường (...orderBy)
-      ref = ref.orderBy(...orderBy)
+      constraints.push(orderByFn(...orderBy));
+    }
+
+    /** Tạo query với các constraints */
+    if (constraints.length > 0) {
+      ref = queryFn(ref, ...constraints);
     }
 
     /** gọi hàm giám sát collection (onSnapshot) ,trả về @object 'snapshot' mỗi khi có sự 
@@ -63,7 +77,7 @@ export const useCollection = (collection, _query, _orderBy) => {
      * @unsubscribe     component liên kết với return của hàm để tạo cleanup khi component cha
      *                  mất kết nối
      */ 
-    const unsubscribe = ref.onSnapshot(snapshot => {
+    const unsubscribe = onSnapshot(ref, (snapshot) => {
       // component tạm thời
       let results = []
 
@@ -84,7 +98,7 @@ export const useCollection = (collection, _query, _orderBy) => {
     /** Gọi hàm cleanup, unsubscribe khi mất kết nối */
     return () => unsubscribe()
 
-  }, [collection, query, orderBy])
+  }, [colName, query, orderBy])
 
   return { documents, error }
 }

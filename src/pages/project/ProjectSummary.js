@@ -13,8 +13,8 @@
 /** -------------------------------------------------------------------------- 
   @IMPORT --------------------------------------------------------------------
 --------------------------------------------------------------------------- */
-/** React route component (useHistory) */
-import { useHistory } from 'react-router-dom'
+/** React route component (useNavigate) */
+import { useNavigate } from 'react-router-dom'
 
 /** Custom hooks */
 import { useFirestore } from "../../hooks/useFirestore"     // hooks để sử dụng dịch vụ firestore của firebase
@@ -42,8 +42,8 @@ export default function ProjectSummary({ project }) {
    */
   const { user } = useAuthContext()
 
-  /** component liên kết với hook (useHistory) để chuyển hướng URL */
-  const history = useHistory()
+  /** component liên kết với hook (useNavigate) để chuyển hướng URL */
+  const navigate = useNavigate()
 
   /** hàm xử lý khi ấn nút xóa project */
   const handleClick = () => {
@@ -51,7 +51,7 @@ export default function ProjectSummary({ project }) {
     deleteDocument(project.id)
 
     /** chuyển hướng URL về page mặc định */
-    history.push('/')
+    navigate('/')
   }
 
   return (

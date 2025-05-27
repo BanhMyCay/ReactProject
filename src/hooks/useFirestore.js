@@ -17,8 +17,15 @@
 import { useReducer, useEffect, useState } from "react"
 
 /** Firebase component (firestore, timestamp) */
-import { projectFirestore, timestamp } from "../firebase/config"
-
+import { projectFirestore } from "../firebase/config"
+import {
+  collection,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  doc,
+  serverTimestamp
+} from "firebase/firestore"
 
 
 /** -------------------------------------------------------------------------- 
@@ -75,7 +82,7 @@ const firestoreReducer = (state, action) => {
  * @Ret3  updateDocument    - hàm sửa một mục document
  * @Ret4  response          - object respone của hooks
 */
-export const useFirestore = (collection) => {
+export const useFirestore = (colName) => {
   /**   object chứa respone của hooks sử dụng dịch vụ database sử dụng hook useReducer
    * @response      tên object
    * @dispatch      tên hàm đăng ký gắn giá trị object với return hàm firestoreReducer
@@ -89,7 +96,7 @@ export const useFirestore = (collection) => {
   /** Component liên kết với Collection của dịch vụ database tên Firebase 
    * @collection    tên collection cần liên kết 
    */
-  const ref = projectFirestore.collection(collection)
+  const ref = collection(projectFirestore, colName)
   
   /**   hàm thực hiện thay đổi object respone của hooks khi hooks chưa hủy liên kết
    * @action    action sẽ thay đổi object (gắn với hook useReducer)
@@ -104,7 +111,7 @@ export const useFirestore = (collection) => {
    * @Arg1  doc     component đại diện document     
    * @note  @async và @await để sử dụng các hàm bất đồng bộ khi làm việc với backend
    */
-  const addDocument = async (doc) => {
+  const addDocument = async (docData) => {
     /** thay đổi object respone của hooks về trạng thái đang đang làm việc với database */
     dispatch({ type: "IS_PENDING" })
 
@@ -112,12 +119,12 @@ export const useFirestore = (collection) => {
       /**   hàm lấy thời gian hiện tại của dịch vụ firestore trên firebase
        * @createdAt      component chưa thời gian hiện tại
        */ 
-      const createdAt = timestamp.fromDate(new Date())
+      const createdAt = serverTimestamp()
 
       /**   hàm thêm một document mới lên firestore của firebase
        * @addedDocument   component liên kết document mới trên firestore của firebase
        */ 
-      const addedDocument = await ref.add({...doc, createdAt })
+      const addedDocument = await addDoc(ref, {...docData, createdAt })
 
       /** thay đổi object respone của hooks khi thêm một document mới */
       dispatchIfNotCancelled({ type: "ADDED_DOCUMENT", payload: addedDocument })
@@ -140,7 +147,7 @@ export const useFirestore = (collection) => {
       /**   hàm xóa (delete) một document theo id (doc(id)) trên firestore của firebase 
        * @deletedDocument component liên kết document đã xóa trên firestore của firebase
        */ 
-      const deletedDocument = await ref.doc(id).delete()
+      const deletedDocument = await deleteDoc(doc(projectFirestore, colName, id))
 
       /** thay đổi object respone của hooks khi xóa một document */
       dispatchIfNotCancelled({ type: 'DELETED_DOCUMENT', payload: deletedDocument })
@@ -165,7 +172,7 @@ export const useFirestore = (collection) => {
       /**   hàm sửa (update) một document có id 'id' theo nội dung 'updates' lên firestore của firebase 
        * @updatedDocument component liên kết document đã sửa trên firestore của firebase
        */ 
-      const updatedDocument = await ref.doc(id).update(updates)
+      const updatedDocument = await updateDoc(doc(projectFirestore, colName, id), updates)
 
       /** thay đổi object respone của hooks khi sửa một document */
       dispatchIfNotCancelled({ type: "UPDATED_DOCUMENT", payload: updatedDocument })

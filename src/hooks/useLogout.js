@@ -18,6 +18,8 @@ import { useState, useEffect } from 'react'
 
 /** Firebase component (authentication, firestore) */
 import { projectAuth, projectFirestore } from '../firebase/config'                
+import { signOut } from 'firebase/auth'
+import { doc, updateDoc } from 'firebase/firestore'
 
 /** Custom hooks */
 import { useAuthContext } from './useAuthContext'               // Hooks để sủ dụng context chứa xác minh người dùng
@@ -34,7 +36,6 @@ import { useAuthContext } from './useAuthContext'               // Hooks để s
 */
 export const useLogout = () => {
   const [isCancelled, setIsCancelled] = useState(false)         // component cờ báo sử dụng cleanup funtion cho hàm bất đồng bộ
-  
   const [error, setError] = useState(null)                      // component chuỗi ký tự báo lỗi
   const [isPending, setIsPending] = useState(false)             // component cờ báo đang làm việc với database
 
@@ -57,12 +58,12 @@ export const useLogout = () => {
       /**   hàm update thuộc tính của document với id của người dùng thuộc collection users trên firestore
        * @online  trạng thái online
        */ 
-      await projectFirestore.collection('users').doc(uid).update({ online: false })
+      await updateDoc(doc(projectFirestore, 'users', uid), { online: false })
 
       /**   hàm đăng xuất tài khoản của dịch vụ firebase authentication
        * @res   component liên kết với thông tin tài khoản trên firebase
        */ 
-      await projectAuth.signOut()
+      await signOut(projectAuth)
 
       /**   hàm thay đổi global component chứa thông tin xác mình người dùng
        * @{}  object action cho hàm
