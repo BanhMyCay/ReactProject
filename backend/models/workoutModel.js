@@ -126,8 +126,13 @@ const workoutSchema = new Schema({
     type: [userSchema], 
     default: [] 
   },
-  comments: { type: [commentSchema], default: [] }            // Bình luận
+  comments: { 
+    type: [commentSchema], 
+    default: [] 
+  } 
 })
+
+
 
 /** Tạo model có tên là 'Workout'. Mongoose sẽ tự map model 'workoutSchema' này sang collection workouts (dạng số nhiều, chữ thường).
  *  'module.exports' cho phép import model này ở file khác bằng require('./models/Workout') 

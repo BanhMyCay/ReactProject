@@ -18,6 +18,8 @@
 // npm install dotenv (package dotenv, sử dụng file .env)
 // nodemon server.js (bắt đầu chạy server)
 // npm install mongoose (mongoose là một thư viện (ODM) dùng trong Node.js để làm việc với MongoDB)
+// npm install axios (axios )
+
 
 
 /** -------------------------------------------------------------------------- 
@@ -50,7 +52,6 @@ const exapp = express()
 --------------------------------------------------------------------------- */
 /** Middleware - là các hàm chạy trước khi request được xử lý bởi route chính */
 
-
 /** Tự động phân tích (parse) body của request nếu nội dung là JSON
  *  Nếu không có dòng này, req.body sẽ là undefined
  */
@@ -71,10 +72,10 @@ exapp.use((req, res, next) => {
 /** -------------------------------------------------------------------------- 
   @FUNCTIONS -----------------------------------------------------------------
 --------------------------------------------------------------------------- */
-/** Route xử lý các request đến địa chỉ '/api/workouts' 
- * @Arg1  '/api/workouts' - đường dẫn gốc của workouts
+/** Route xử lý các request đến địa chỉ '/api/products'
+ * @Arg1  '/api/products' - đường dẫn gốc của products
  * @Arg2  "mini-app" chuyên xử lý các route
- */       
+ */
 exapp.use('/api/workouts', workoutRoutes)
 
 /** Gọi hàm liên kết với db của mongoDB
@@ -88,7 +89,7 @@ mongoose.connect(process.env.MONGO_URI)
      * @Arg1  công chỉ định (lấy từ biến môi trường 'PORT')
      * @Arg2  hàm xử lý sau khi khởi động
      */
-    exapp.listen(process.env.PORT, () => {
+      exapp.listen(process.env.PORT, () => {
       console.log('listening for requests on port', process.env.PORT)
     })
   })
@@ -97,4 +98,3 @@ mongoose.connect(process.env.MONGO_URI)
   }) 
 
 
- 

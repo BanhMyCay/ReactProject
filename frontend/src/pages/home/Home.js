@@ -41,7 +41,7 @@ export default function Home() {
    */
   const { documents, error } = useCollection(
     'transactions',           // tên collection
-    ["uid", "==", user.uid],  // chỉ tìm các documents của user.uid
+    ["uid", user.uid],        // chỉ tìm các documents của user.uid
     ['createdAt', 'desc']     // sắp xếp theo thời gian tạo giảm dần 
   )
 

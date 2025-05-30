@@ -28,7 +28,7 @@ import { timestamp } from '../../firebase/config'
 /** Custom hooks */
 import { useCollection } from '../../hooks/useCollection'   // hooks liên kết collection trên database của firebase
 import { useAuthContext } from '../../hooks/useAuthContext' // hooks để sủ dụng context chứa xác minh người dùng
-import { useFirestore } from '../../hooks/useFirestore'     // hooks để sử dụng dịch vụ database của firebase
+import { useMongo } from '../../hooks/useMongo'             // hooks để sử dụng dịch vụ database
 
 /** Custom components */
 
@@ -66,7 +66,7 @@ export default function Ceate() {
    * @addDocument hàm thêm một mục document
    * @response    object respone của hooks
   */
-  const { addDocument, response } = useFirestore('projects')
+  const { addDocument, response } = useMongo('projects')
   
   /** object gồm các component liên kết collection trên database của firebase
    * @documents component chứa các documents của collection

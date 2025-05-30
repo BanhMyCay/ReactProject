@@ -13,12 +13,14 @@
 /** -------------------------------------------------------------------------- 
   @IMPORT --------------------------------------------------------------------
 --------------------------------------------------------------------------- */
-/** React component (useEffect, useState) */
-import { useEffect, useState } from "react"
+/** React components */
+import { 
+  useEffect,  // hooks xử lý side effects (chạy code phụ trợ sau khi component render)
+  useState,   // hooks lưu trữ và cập nhật state
+} from "react"
 
-/** Firebase component (firestore) */
-import { projectFirestore } from "../firebase/config"
-import { doc, onSnapshot } from "firebase/firestore";
+/** Axios component */
+import axios from "axios";  // thư viện HTTP client giúp bạn gửi request và nhận response từ một server  
 
 
 
@@ -35,34 +37,32 @@ export const useDocument = (collection, id) => {
   const [document, setDocument] = useState(null)    // component liên kết với document
   const [error, setError] = useState(null)          // component lỗi khi sử dụng hook
 
-  /** Sử dụng useEffect để chạy một lần các hàm bên trong 
+  /** Sử dụng hooks useEffect để lấy dữ liệu document trên database
    * @dependency1   collection  - tên collection cần sử dụng
    * @dependency2   id          - id của document
    */
   useEffect(() => {
-    /** component liên kết với document có id 'id' trong collection 'collection' */
-    const ref = doc(projectFirestore, collection, id)
-
-    /** hàm theo dõi liên tục (onSnapshot) document, nếu có thay đổi trả về 'snapshot' 
-     * @unsubscribe     component để clear function khi component cha mất liên kết
+    /** Hàm để lấy dữ liệu từ document của backend
+     * @note  @async và @await để sử dụng các hàm bất đồng bộ khi làm việc với backend
      */
-    const unsubscribe = onSnapshot(ref, (snapshot) => {
-      /** nếu có dữ liệu, update component 'document' và clear lỗi */
-      if(snapshot.data()) {
-        setDocument({...snapshot.data(), id: snapshot.id})
-        setError(null)
+    const fetchDocument = async () => {
+      try {
+        /** Component 'url' chứa địa chỉ gọi API, VD: /api/products */
+        const response = await axios.get(`/api/documents/${collection}/${id}`)
+        
+        if (response.data) {  // Nếu response có dữ liệu
+          setDocument({ ...response.data, id }) // Cập nhật state 'document' với dữ liệu trả về từ MongoDB.
+          setError(null)      // Xóa lỗi cũ (nếu có)
+        } else {              // Nếu không có dữ liệu (null hoặc undefined), báo lỗi: document không tồn tại.
+          setError("No such document exists")
+        }
+      } catch (err) {   // Nếu xảy ra lỗi trong quá trình gọi API:
+        console.log(err.message)          // log lỗi
+        setError("Failed to get document")// Cập nhật state 'error' với thông báo lỗi.
       }
-      else {        // không có dữ liệu, báo lỗi
-        setError('No such document exists')
-      }
-    }, err => {     // nếu onSnapshot lỗi, báo lỗi
-      console.log(err.message)
-      setError('failed to get document')
-    })
+    }
 
-    // gọi hàm clear function khi component cha mất liên kết 
-    return () => unsubscribe()
-
+    fetchDocument()
   }, [collection, id])
 
   return { document, error }

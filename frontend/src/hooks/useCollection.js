@@ -13,18 +13,16 @@
 /** -------------------------------------------------------------------------- 
   @IMPORT --------------------------------------------------------------------
 --------------------------------------------------------------------------- */
-/** React components (useEffect, useState, useRef) */
-import { useEffect, useState, useRef } from "react"
-
-/** Firebase component (firestore) */
-import { projectFirestore } from "../firebase/config"
+/** React components */
 import { 
-  collection, 
-  query as queryFn, 
-  where, 
-  orderBy as orderByFn, 
-  onSnapshot 
-} from "firebase/firestore";
+  useEffect,  // hooks xử lý side effects (chạy code phụ trợ sau khi component render)
+  useState,   // hooks lưu trữ và cập nhật state
+  useRef      // hooks ham chiếu đến DOM hoặc giữ giá trị không làm re-render
+} from "react"
+
+/** Axios component */
+import axios from "axios";  // thư viện HTTP client giúp bạn gửi request và nhận response từ một server             
+
 
 
 /** -------------------------------------------------------------------------- 
@@ -32,8 +30,8 @@ import {
 --------------------------------------------------------------------------- */
 /** Custom hook (useCollection) liên kết collection trên database của firebase
  * @Arg1  collection    - component chứa tên collection cần sử dụng
- * @Arg2  _query        - array chứa yêu cầu properties để truy vấn cụ thể documents của collection
- * @Arg3  _orderBy      - array chứa yêu cầu properties để truy vấn thời gian tạo cụ thể của documents
+ * @Arg2  _query        - array chứa yêu cầu properties để lọc documents của collection
+ * @Arg3  _orderBy      - array chứa yêu cầu properties để sắp xếp documents
  * @Ret1  documents     - component chứa các documents của collection
  * @Ret2  error         - component chuỗi ký tự báo lỗi
  */
@@ -52,51 +50,46 @@ export const useCollection = (colName, _query, _orderBy) => {
    * @dependency3   orderBy     - component thay thế object _orderBy
    */
   useEffect(() => {
-    /** component kết nối với collection sử dụng dịch vụ firestore */
-    let ref = collection(projectFirestore, colName)
+    /** Hàm để lấy dữ liệu từ collection của backend
+     * @note  @async và @await để sử dụng các hàm bất đồng bộ khi làm việc với backend
+     */
+    const fetchCollection = async () => {
+      try {
+        /** Component 'url' chứa địa chỉ gọi API, VD: /api/products */
+        let url = `/api/${colName}`;
+        
+        /** Component 'params' giúp tạo chuỗi truy vấn dạng ?key=value */
+        const params = new URLSearchParams();
 
-    /** Tạo mảng điều kiện để truyền vào hàm query */
-    const constraints = [];
-    
-    /** yêu cầu properties, truy vấn cụ thể các documents thỏa mãn yêu cầu  */
-    if (query) {                // chỉ tìm các documents có properties (...query)
-      constraints.push(where(...query));
-    }
-    if (orderBy) {              // sắp xếp theo trường (...orderBy)
-      constraints.push(orderByFn(...orderBy));
-    }
+        /** yêu cầu properties, lọc cụ thể các documents thỏa mãn yêu cầu  */
+        if (query && query.length === 2) {      // chỉ tìm các documents có properties 
+          params.append(query[0], query[1]);    // [key, value] - VD: ?category=books
+        }
+        if (orderBy && orderBy.length === 2) {  // sắp xếp dữ liệu 
+          params.append("sort", orderBy[0]);    // [sort, value] - VD: ?sort=createdAt
+          params.append("direction", orderBy[1]);// [sordirection, value] - VD: ?direction=desc
+        }
 
-    /** Tạo query với các constraints */
-    if (constraints.length > 0) {
-      ref = queryFn(ref, ...constraints);
-    }
+        /** Gắn chuỗi query params vào 'url' để lọc documents nếu có bất kỳ tham số nào */
+        if ([...params].length > 0) {
+          url += "?" + params.toString();
+        }
 
-    /** gọi hàm giám sát collection (onSnapshot) ,trả về @object 'snapshot' mỗi khi có sự 
-     *  thay đổi collection trên firebase, rồi xử lý hàm bên trong (khi refresh trang cũng 
-     *  tạo 1 snapshot) 
-     * @unsubscribe     component liên kết với return của hàm để tạo cleanup khi component cha
-     *                  mất kết nối
-     */ 
-    const unsubscribe = onSnapshot(ref, (snapshot) => {
-      // component tạm thời
-      let results = []
+        /** Gửi GET request đến API, phản hổi lưu vào component 'response' */
+        const response = await axios.get(url);
 
-      /**   hàm quét từng documents nhận được từ firestore và push vào component tạm thời */
-      snapshot.docs.forEach(doc => {
-        console.log(doc)
-        results.push({...doc.data(), id: doc.id})
-      });
-      
-      setDocuments(results)     // update component chứa các documents của collection
-      setError(null)            // clear lỗi
-    }, error => {               // lỗi khi đang onSnapshot
-      console.log(error)        // log lỗi
-      setDocuments(null)         // clear component chứa các documents của collection
-      setError('could not fetch the data')  // báo lỗi
-    })
+        /** Nếu thành công: cập nhật state 'documents' bằng dữ liệu nhận được và Xóa lỗi trước đó nếu có */
+        setDocuments(response.data);
+        setError(null);
+      } catch (err) {       // Nếu lỗi xảy ra khi gọi API:
+        console.log(err);   // log lỗi
+        setError("Could not fetch the data from MongoDB API."); // báo lỗi
+        setDocuments(null); // Xóa dữ liệu hiện có (nếu có).
+      }
+    };
 
-    /** Gọi hàm cleanup, unsubscribe khi mất kết nối */
-    return () => unsubscribe()
+    /** Gọi hàm fetchCollection khi useEffect chạy lần đầu hoặc khi các dependency thay đổi */
+    fetchCollection();
 
   }, [colName, query, orderBy])
 
