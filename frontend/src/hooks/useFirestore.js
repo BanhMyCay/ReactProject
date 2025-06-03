@@ -1,11 +1,11 @@
 /**
- * @title     useMongo hook
- * @brief     Custom hooks (useMongo) để sử dụng dịch vụ database của mongoDB
- * @filename  useMongo.js
+ * @title     useFirestore hook
+ * @brief     Custom hooks (useFirestore) để sử dụng dịch vụ firestore của firebase
+ * @filename  useFirestore.js
  ----------------------------------------------------------------------------- 
- * @author
- * @nation
- * @date 
+ * @author    BanhMyCay
+ * @nation    VietNam
+ * @date      03/06/2025
  */
 
 
@@ -14,15 +14,18 @@
   @IMPORT --------------------------------------------------------------------
 --------------------------------------------------------------------------- */
 /** React components (useReducer, useEffect, useState) */
-import { 
-  useReducer, // hooks quản lý state phức tạp
-  useEffect,  // hooks xử lý side effects (chạy code phụ trợ sau khi component render)
-  useState,   // hooks lưu trữ và cập nhật state
-} from "react"
+import { useReducer, useEffect, useState } from "react"
 
-/** Axios component */
-import axios from "axios";  // thư viện HTTP client giúp bạn gửi request và nhận response từ một server 
-
+/** Firebase component (firestore, timestamp) */
+import { projectFirestore } from "../firebase/config"
+import {
+  collection,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  doc,
+  serverTimestamp
+} from "firebase/firestore"
 
 
 /** -------------------------------------------------------------------------- 
@@ -50,7 +53,7 @@ let initialState = {
  * @state     object cần thay đổi (gắn với hook useReducer)
  * @action    action sẽ thay đổi component (gắn với hook useReducer)
  */
-const mongoReducer = (state, action) => {
+const firestoreReducer = (state, action) => {
   switch (action.type) {
     case "IS_PENDING":          // báo hooks đang làm việc với database
       return {success: false, isPending: true, error: null, document: null}
@@ -72,23 +75,28 @@ const mongoReducer = (state, action) => {
 /** -------------------------------------------------------------------------- 
   @CUSTOM_HOOK_FUNCTIONS -----------------------------------------------------
 --------------------------------------------------------------------------- */
-/** Custom hook (useMongo) để sủ dụng dịch vụ database của Firebase
+/** Custom hook (useFirestore) để sủ dụng dịch vụ database của Firebase
  * @Arg1  collection        - tên collection cần sử dụng
  * @Ret1  addDocument       - hàm thêm một mục document
  * @Ret2  deleteDocument    - hàm xóa một mục document
  * @Ret3  updateDocument    - hàm sửa một mục document
  * @Ret4  response          - object respone của hooks
 */
-export const useMongo  = (colName) => {
+export const useFirestore = (colName) => {
   /**   object chứa respone của hooks sử dụng dịch vụ database sử dụng hook useReducer
    * @response      tên object
    * @dispatch      tên hàm đăng ký gắn giá trị object với return hàm firestoreReducer
    * @firestoreReducer   hàm thay đổi giá trị object response theo action với dịch vụ database
    * @initialState  giá trị khởi đầu cho object response
    */
-  const [response, dispatch] = useReducer(mongoReducer, initialState)
+  const [response, dispatch] = useReducer(firestoreReducer, initialState)
   
   const [isCancelled, setIsCancelled] = useState(false) // component cờ báo sử dụng cleanup funtion cho hàm bất đồng bộ
+
+  /** Component liên kết với Collection của dịch vụ database tên Firebase 
+   * @collection    tên collection cần liên kết 
+   */
+  const ref = collection(projectFirestore, colName)
   
   /**   hàm thực hiện thay đổi object respone của hooks khi hooks chưa hủy liên kết
    * @action    action sẽ thay đổi object (gắn với hook useReducer)
@@ -100,7 +108,7 @@ export const useMongo  = (colName) => {
   }
 
   /**   hàm thực hiện thêm document sử dụng dịch vụ database
-   * @Arg1  doc - component đại diện document     
+   * @Arg1  doc     component đại diện document     
    * @note  @async và @await để sử dụng các hàm bất đồng bộ khi làm việc với backend
    */
   const addDocument = async (docData) => {
@@ -108,23 +116,27 @@ export const useMongo  = (colName) => {
     dispatch({ type: "IS_PENDING" })
 
     try {
-      /**   hàm lấy thời gian hiện tại
+      /**   hàm lấy thời gian hiện tại của dịch vụ firestore trên firebase
        * @createdAt      component chưa thời gian hiện tại
        */ 
-      const createdAt = new Date()
+      const createdAt = serverTimestamp()
 
-      /**   hàm thêm một document mới lên database
-       * @res   phản hồi từ backend
+      /**   hàm thêm một document mới lên firestore của firebase
+       * @addedDocument   component liên kết document mới trên firestore của firebase
        */ 
-      const res = await axios.post(`/api/${colName}`, { ...docData, createdAt })
-      dispatchIfNotCancelled({ type: "ADDED_DOCUMENT", payload: res.data })
-    } catch (err) { // thay đổi object respone của hooks khi gặp lỗi
+      const addedDocument = await addDoc(ref, {...docData, createdAt })
+
+      /** thay đổi object respone của hooks khi thêm một document mới */
+      dispatchIfNotCancelled({ type: "ADDED_DOCUMENT", payload: addedDocument })
+    }
+    catch (err) {
+      /** thay đổi object respone của hooks khi gặp lỗi */ 
       dispatchIfNotCancelled({ type: "ERROR", payload: err.message })
     }
   }
 
   /**   hàm thực hiện xóa document sử dụng dịch vụ database
-   * @Arg1  id  - id đại diện document
+   * @Arg1  id      id đại diện document
    * @note  @async và @await để sử dụng các hàm bất đồng bộ khi làm việc với backend
    */
   const deleteDocument = async (id) => {
@@ -132,18 +144,13 @@ export const useMongo  = (colName) => {
     dispatch({ type: 'IS_PENDING' })
 
     try {
-      /**   hàm lấy thời gian hiện tại
-       * @createdAt      component chưa thời gian hiện tại
+      /**   hàm xóa (delete) một document theo id (doc(id)) trên firestore của firebase 
+       * @deletedDocument component liên kết document đã xóa trên firestore của firebase
        */ 
-      const createdAt = new Date()
-
-      /**   hàm xóa một document trên database
-       * @res   phản hồi từ backend
-       */ 
-      const res = await axios.delete(`/api/${colName}/${id}`)
+      const deletedDocument = await deleteDoc(doc(projectFirestore, colName, id))
 
       /** thay đổi object respone của hooks khi xóa một document */
-      dispatchIfNotCancelled({ type: 'DELETED_DOCUMENT', payload: res.data })
+      dispatchIfNotCancelled({ type: 'DELETED_DOCUMENT', payload: deletedDocument })
     }
     catch (err) {
       /** thay đổi object respone của hooks khi gặp lỗi */ 
@@ -162,18 +169,20 @@ export const useMongo  = (colName) => {
     dispatch({ type: "IS_PENDING" })
 
     try {
-      /**   hàm sửa (update) một document có id 'id' theo nội dung 'updates' lên database 
-       * @res   phản hồi từ backend
+      /**   hàm sửa (update) một document có id 'id' theo nội dung 'updates' lên firestore của firebase 
+       * @updatedDocument component liên kết document đã sửa trên firestore của firebase
        */ 
-      const res = await axios.put(`/api/${colName}/${id}`, updates)
+      const updatedDocument = await updateDoc(doc(projectFirestore, colName, id), updates)
 
       /** thay đổi object respone của hooks khi sửa một document */
-      dispatchIfNotCancelled({ type: "UPDATED_DOCUMENT", payload: res.data })
-      return res.data
+      dispatchIfNotCancelled({ type: "UPDATED_DOCUMENT", payload: updatedDocument })
+
+      return updatedDocument
     } 
     catch (error) {
       /** thay đổi object respone của hooks khi gặp lỗi */ 
-      dispatchIfNotCancelled({ type: 'ERROR', payload: 'could not update' })
+      dispatchIfNotCancelled({ type: 'ERROR', payload: 'could not delete' })
+
       return null
     }
   }

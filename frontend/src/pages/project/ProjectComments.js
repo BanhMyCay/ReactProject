@@ -24,7 +24,7 @@ import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 /** Custom hooks */
 import { useAuthContext } from "../../hooks/useAuthContext"     // hook để sủ dụng context chứa xác minh người dùng
-import { useMongo } from "../../hooks/useMongo"                 // hook để sử dụng dịch vụ database của firebase
+import { useFirestore } from "../../hooks/useFirestore"           // hook để sử dụng dịch vụ database của firebase
 
 /** Custom component */
 import Avatar from "../../components/Avatar"                    // Avatar component
@@ -46,7 +46,7 @@ export default function ProjectComments({ project }) {
    * @updateDocument    hàm sửa một mục document
    * @response          object respone của hooks
    */
-  const { updateDocument, response } = useMongo('projects')
+  const { updateDocument, response } = useFirestore('projects')
 
   const [newComment, setNewComment] = useState('')      // components chứa tạm comment của user
 

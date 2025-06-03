@@ -3,9 +3,9 @@
  * @brief     App (main) components of MyMoney project
  * @filename  App.js
  ----------------------------------------------------------------------------- 
- * @author
- * @nation
- * @date 
+ * @author    BanhMyCay
+ * @nation    VietNam
+ * @date      02/06/2025
  */
 
 
@@ -14,20 +14,25 @@
   @IMPORT --------------------------------------------------------------------
 --------------------------------------------------------------------------- */
 /** React components (React) */
-import React from 'react';
+import React from "react";
 
-/** React route components (BrowserRouter, Route, Routes, Navigate) */
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
+/** React route components */
+import { 
+  BrowserRouter,  // Bọc các app kích hoạt cơ chế routing sử dụng history API của trình duyệt
+  Route,          // Định nghĩa một đường dẫn cụ thể và component tương ứng sẽ được render
+  Routes,         // Chứa danh sách các <Route />
+  Navigate        // Chuyển hướng đến một route khác
+} from "react-router-dom"
 
 /** Page components */
-import Dashboard from './pages/dashboard/Dashboard'
-import Create from './pages/create/Create'
-import Login from './pages/login/Login'                   // Login page
-import Signup from './pages/signup/Signup'                // Sign up page
-import Project from './pages/project/Project'
+import Dashboard from "./pages/dashboard/Dashboard"
+import Create from "./pages/create/Create"
+import Login from "./pages/login/Login"                   // Login page
+import Signup from "./pages/signup/Signup"                // Sign up page
+import Project from "./pages/project/Project"
 
 /** Custom hooks */
-import { useAuthContext } from './hooks/useAuthContext'   // Hooks để sủ dụng context chứa xác minh người dùng
+import { useAuthContext } from "./hooks/useAuthContext"; // Hooks để sủ dụng context chứa xác minh người dùng
 
 /** Custom Components */
 import Navbar from './components/Navbar'                  // Navigation bar
@@ -42,7 +47,7 @@ import './App.css'
 /** -------------------------------------------------------------------------- 
   @COMPONENT_FUNCTIONS -------------------------------------------------------
 --------------------------------------------------------------------------- */
-/**   App components
+/** App components
  * @returns None
  */
 function App() {
@@ -71,13 +76,13 @@ function App() {
             {/* Navbar component */}
             <Navbar />
 
-            {/* Switch case render route (chi sử dụng components đầu tiên khớp với URL) */} 
+            {/* Chứa danh sách các <Route /> */}
             <Routes>
 
               {/** URL path: "/" 
-                *  Nếu chưa đăng nhập tài khoản, chuyển hướng URL: "/login"
+               *  Nếu chưa đăng nhập tài khoản, chuyển hướng URL: "/login"
                 *  Nếu đã đăng nhập tài khoản, mở Dashboard page component 
-                */}
+               */}
               <Route path="/" element={
                 user ? <Dashboard /> : <Navigate to="/login" replace />
               }/>
@@ -98,25 +103,25 @@ function App() {
                 user ? <Project /> : <Navigate to="/login" replace />
               }/>
 
-              {/** URL path: "/login" 
-                *  Nếu đã đăng nhập tài khoản, chuyển hướng URL: "/"
-                *  Nếu chưa đăng nhập tài khoản, mở login page component 
-                */}
+            {/** URL path: "/login"
+             *  Nếu đã đăng nhập tài khoản, chuyển hướng URL: "/"
+             *  Nếu chưa đăng nhập tài khoản, mở login page component
+             */}
               <Route path="/login" element={
                 user ? <Navigate to="/" replace /> : <Login />
               }/>
 
-              {/** URL path: "/signup" 
-                *  Nếu đã đăng nhập tài khoản, chuyển hướng URL: "/"
-                *  Nếu chưa đăng nhập tài khoản, mở signup page component 
-                */}
+            {/** URL path: "/signup"
+             *  Nếu đã đăng nhập tài khoản, chuyển hướng URL: "/"
+             *  Nếu chưa đăng nhập tài khoản, mở signup page component
+             */}
               <Route path="/signup" element={
                 (user && user.displayName) ? <Navigate to="/" replace /> : <Signup />
               }/>
+          
+          </Routes>
 
-            </Routes>
-
-          {/*</React.StrictMode>*/} 
+          {/*</React.StrictMode>*/}
           </div>
 
           {/* User list bar component, chỉ hiển thị khi đã log in */}

@@ -17,7 +17,7 @@
 import { useNavigate } from 'react-router-dom'
 
 /** Custom hooks */
-import { useMongo } from "../../hooks/useMongo"             // hooks để sử dụng dịch vụ firestore của firebase
+import { useFirestore } from "../../hooks/useFirestore"           // hooks để sử dụng dịch vụ firestore của firebase
 import { useAuthContext } from "../../hooks/useAuthContext" // hooks để sủ dụng context chứa xác minh người dùng
 
 /** Custom components */
@@ -35,7 +35,7 @@ export default function ProjectSummary({ project }) {
   /** object chứa các component liên kết với hooks sử dụng dịch vụ firestore với collection 'projects' 
    * @deleteDocument  hàm xóa một mục document
    */ 
-  const { deleteDocument } = useMongo('projects')
+  const { deleteDocument } = useFirestore('projects')
 
   /** object gồm các component liên kết với hooks để sủ dụng context chứa xác minh người dùng
    * @user  global component chứa thông tin xác mình người dùng

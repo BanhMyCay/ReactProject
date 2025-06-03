@@ -1,0 +1,200 @@
+.container {
+  background: white;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  max-width: 960px;
+  margin: 60px auto;
+}
+.content {
+  padding-right: 30px;
+}
+
+/*Product list */
+.product {
+  background: white;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #ddddddea; /* Đường phân cách */
+
+  /* display: flex;
+  align-items: center;
+  justify-content: space-between; */
+}
+
+.product:last-child {
+  border-bottom: none;
+}
+
+.product img {
+  width: 50%;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.product img:hover {
+  background-color: #ffffff;
+  transform: scale(1.2);
+}
+
+.product h3 {
+  font-size: 16px;
+  margin: 10px 0 5px;
+}
+
+.product p {
+  margin: 0 0 10px;
+  color: #888;
+}
+
+/* Nút hình oval */
+.buyButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 999px; /* Oval shape */
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.buyButton:hover {
+  background-color: #0056b3;
+  transform: scale(1.1);
+}
+
+.cartList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cartItem {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 12px;
+}
+
+.productImage {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 16px;
+}
+
+.details {
+  flex: 1;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.amount {
+  width: 100px;
+  text-align: right;
+  font-weight: bold;
+  color: green;
+  margin-right: 16px;
+}
+
+.deleteButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #888;
+  transition: color 0.2s ease;
+}
+
+.deleteButton:hover {
+  color: #e11d48; /* đỏ nhạt */
+}
+
+.quantityControl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 36px;
+  width: fit-content;
+}
+
+.quantityControl button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #f0f0f0;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  border-radius: 0;
+  flex-shrink: 0; /* 🔥 QUAN TRỌNG: ngăn không cho button giãn ra */
+}
+
+.quantityControl button:hover {
+  background: #e2e2e2;
+}
+
+.quantityControl span {
+  min-width: 40px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 36px;
+  background: #fff;
+  font-weight: 500;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.quantityControl {
+  border-radius: 999px;
+}
+.quantityControl button {
+  border-radius: 0;
+}
+
+.totalCostBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #fef3c7, #fde68a); /* vàng nhạt bắt mắt */
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  font-size: 20px;
+  font-weight: 600;
+  color: #4b3c06; /* nâu đậm, nổi bật */
+  margin-top: 24px;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: 20px; /* dịch về bên phải một chút */
+  transition: all 0.3s ease;
+}
+.totalCostBox strong {
+  font-size: 23px; /* số tiền to hơn */
+  font-weight: 700;
+}
+
+.cartContainer {
+  position: sticky;
+  top: 0; /* hoặc top: 80px nếu bạn có header */
+  background: white;
+  z-index: 10;
+}

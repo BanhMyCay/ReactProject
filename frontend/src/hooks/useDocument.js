@@ -3,9 +3,9 @@
  * @brief     Custom hooks (useDocument) liên kết 1 document trên firestore của firebase
  * @filename  useFirestore.js
  ----------------------------------------------------------------------------- 
- * @author
- * @nation
- * @date 
+ * @author    BanhMyCay
+ * @nation    VietNam
+ * @date      03/06/2025
  */
 
 
@@ -19,6 +19,13 @@ import {
   useState,   // hooks lưu trữ và cập nhật state
 } from "react"
 
+/** Firebase component */
+import { projectFirestore } from "../firebase/config"   // component kết nối với dịch vụ database (firestore) của firebase
+import { 
+  doc,          // Tham chiếu đến một document trong Firestore.
+  onSnapshot    // Lắng nghe sự thay đổi dữ liệu realtime.
+} from 'firebase/firestore' // dịch vụ database (firestore) của firebase
+
 /** Axios component */
 import axios from "axios";  // thư viện HTTP client giúp bạn gửi request và nhận response từ một server  
 
@@ -29,11 +36,13 @@ import axios from "axios";  // thư viện HTTP client giúp bạn gửi request
 --------------------------------------------------------------------------- */
 /** Custom hook (useDocument) liên kết 1 document trên firestore của firebase
  * @Arg1  collection- tên collection cần sử dụng
- * @Ret2  id        - id của document
+ * @Arg2  id        - id của document
+ * @Arg3  typeDB    - loại database (false-firestore/true-mongoDB)
  * @Ret1  document  - component liên kết với document
  * @Ret2  error     - component lỗi khi sử dụng hook
+ * 
 */
-export const useDocument = (collection, id) => {
+export const useDocument = (collection, id, typeDB = false) => {
   const [document, setDocument] = useState(null)    // component liên kết với document
   const [error, setError] = useState(null)          // component lỗi khi sử dụng hook
 
@@ -42,10 +51,13 @@ export const useDocument = (collection, id) => {
    * @dependency2   id          - id của document
    */
   useEffect(() => {
-    /** Hàm để lấy dữ liệu từ document của backend
+    /** Component liên kết với return của hàm "onSnapshot" của firestore */
+    let unsubscribe;
+
+    /** Hàm để lấy dữ liệu từ document từ backend
      * @note  @async và @await để sử dụng các hàm bất đồng bộ khi làm việc với backend
      */
-    const fetchDocument = async () => {
+    const fetchDocument1 = async () => {
       try {
         /** Component 'url' chứa địa chỉ gọi API, VD: /api/products */
         const response = await axios.get(`/api/documents/${collection}/${id}`)
@@ -62,8 +74,50 @@ export const useDocument = (collection, id) => {
       }
     }
 
-    fetchDocument()
-  }, [collection, id])
+    /** Hàm để lấy dữ liệu từ document từ firestore */
+    const fetchDocument2 = () => {
+      try {
+        /** component liên kết với document có id 'id' trong collection 'collection' */
+        const ref = doc(projectFirestore, collection, id)
+
+        /** hàm theo dõi liên tục (onSnapshot) document, nếu có thay đổi trả về 'snapshot' 
+         * @unsubscribe     component để clear function khi component cha mất liên kết
+         */
+        unsubscribe = onSnapshot(ref, (snapshot) => {
+          /** nếu có dữ liệu, update component 'document' và clear lỗi */
+          if(snapshot.data()) {
+            setDocument({...snapshot.data(), id: snapshot.id})
+            setError(null)
+          }
+          else {        // không có dữ liệu, báo lỗi
+            setError('No such document exists')
+          }
+        }, err => {     // nếu onSnapshot lỗi, báo lỗi
+          console.log(err.message)
+          setError('failed to get document')
+        })
+      } catch (err) {   // Nếu xảy ra lỗi trong quá trình gọi API:
+        console.log(err.message)          // log lỗi
+        setError("Failed to get document")// Cập nhật state 'error' với thông báo lỗi.
+      }
+    }
+
+    /** Gọi hàm fetchDocument khi useEffect chạy lần đầu hoặc khi các dependency thay đổi */
+    if(typeDB === false) {
+      fetchDocument2();
+    } else {
+      fetchDocument1();
+    }
+
+    /** Gọi hàm cleanup, unsubscribe khi mất kết nối */
+    return () => {
+      if (unsubscribe) {
+        unsubscribe()
+      }
+    }
+
+  }, [collection, id, typeDB])
 
   return { document, error }
 }
+
