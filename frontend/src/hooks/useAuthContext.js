@@ -3,9 +3,9 @@
  * @brief     Custom hooks (useAuthContext) để sủ dụng context chứa xác minh người dùng
  * @filename  useAuthContext.js
  ----------------------------------------------------------------------------- 
- * @author
- * @nation
- * @date 
+ * @author    BanhMyCay
+ * @nation    VietNam
+ * @date      02/06/2025
  */
 
 
@@ -17,7 +17,7 @@
 import { useContext } from "react"
 
 /** Context */
-import { AuthContext } from '../context/AuthContext';       // Context chứa xác minh người dùng
+import { AuthContext } from "../context/AuthContext"  // Context chứa xác minh người dùng
 
 
 

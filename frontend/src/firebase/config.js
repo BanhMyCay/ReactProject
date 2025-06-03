@@ -3,9 +3,9 @@
  * @brief     File contain firebase's config
  * @filename  config.js
  ----------------------------------------------------------------------------- 
- * @author
- * @nation
- * @date 
+ * @author    BanhMyCay
+ * @nation    VietNam
+ * @date      02/06/2025
  */
 
 

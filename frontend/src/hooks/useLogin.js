@@ -3,9 +3,9 @@
  * @brief     Custom hooks (useLogin) để thực hiện đăng nhập tài khoản
  * @filename  useLogin.js
  ----------------------------------------------------------------------------- 
- * @author
- * @nation
- * @date 
+ * @author    BanhMyCay
+ * @nation    VietNam
+ * @date      03/06/2025
  */
 
 
@@ -13,16 +13,25 @@
 /** -------------------------------------------------------------------------- 
   @IMPORT --------------------------------------------------------------------
 --------------------------------------------------------------------------- */
-/** React hooks (useState, useEffect) */
-import { useState, useEffect } from 'react'
+/** React hooks */
+import {
+  useState,     // Tạo các biến trạng thái trong component
+  useEffect     // Dùng để xử lý logic side effect khi component được render hoặc update
+} from 'react'
 
-/** Firebase component (authentication, firestore) */
-import { projectAuth, projectFirestore } from '../firebase/config'                
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { doc, updateDoc } from 'firebase/firestore'
+/** Firebase component */
+import { 
+  projectAuth,        // Kết nối tới dịch vụ Firebase Authentication
+  projectFirestore    // Kết nối tới dịch vụ Firestore database 
+} from '../firebase/config'                
+import { signInWithEmailAndPassword } from 'firebase/auth'  // Firebase SDK xử lý đăng nhập với email và mật khẩu
+import { 
+  doc,          // Tạo tham chiếu đến 1 document trong Firestore
+  updateDoc     // Cập nhật nội dung của 1 document hiện có trong Firestore
+} from 'firebase/firestore'
 
 /** Custom hooks */
-import { useAuthContext } from './useAuthContext'               // Hooks để sủ dụng context chứa xác minh người dùng
+import { useAuthContext } from './useAuthContext'   // Hooks để sủ dụng context chứa xác minh người dùng
 
 
 
@@ -60,7 +69,8 @@ export const useLogin = () => {
       const res = await signInWithEmailAndPassword(projectAuth, email, password)
 
       /**   hàm update thuộc tính của document với id của người dùng thuộc collection users trên firestore
-       * @online  trạng thái online
+       * @Arg1  document cần sửa
+       * @Arg2  "online" - trạng thái online
        */ 
       await updateDoc(doc(projectFirestore, 'users', res.user.uid), { online: true })
 

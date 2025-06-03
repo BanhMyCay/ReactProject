@@ -19,7 +19,7 @@
 // nodemon server.js (bắt đầu chạy server)
 // npm install mongoose (mongoose là một thư viện (ODM) dùng trong Node.js để làm việc với MongoDB)
 // npm install axios (thư viện HTTP client giúp gửi request và nhận response từ một server)
-
+// npm install cors (CORS middleware (cho phép clients từ domain khác, VD: localhost:3000))
 
 
 /** -------------------------------------------------------------------------- 
@@ -150,6 +150,8 @@ async function init_mongoDb() {
         }
       );
     }
+
+    return true;
   } catch (err) {  // Bắt lỗi nếu có lỗi khi khởi tạo database
     console.log(err);// log lỗi
     return false;
@@ -175,7 +177,7 @@ mongoose.connect(process.env.MONGO_URI)
      *  "async/await" để xử lý các hàm bất đồng bộ
      * @Arg1  initDatabase - trạng thái hàm 
      */
-    const initDatabase = await init_mongoDb(dataSource);
+    const initDatabase = await init_mongoDb();
     if (initDatabase) { // init dữ liệu trên MongoDB thành công, log trạng thái
       console.log("Init database OK!");
     } else {   // init dữ liệu trên MongoDB thất bại, log trạng thái
@@ -186,4 +188,4 @@ mongoose.connect(process.env.MONGO_URI)
     console.log(err)  // log lỗi
   }) 
 
-  
+

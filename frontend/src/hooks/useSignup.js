@@ -3,9 +3,9 @@
  * @brief     Custom hooks (useSignup) để thực hiện đăng ký người dùng mới
  * @filename  useFetch.js
  ----------------------------------------------------------------------------- 
- * @author
- * @nation
- * @date 
+ * @author    BanhMyCay
+ * @nation    VietNam
+ * @date      03/06/2025
  */
 
 
@@ -13,13 +13,26 @@
 /** -------------------------------------------------------------------------- 
   @IMPORT --------------------------------------------------------------------
 --------------------------------------------------------------------------- */
-/** React hooks (useState, useEffect) */
-import { useState, useEffect } from 'react'
+/** React hooks */
+import {
+  useState,     // Tạo các biến trạng thái trong component
+  useEffect     // Dùng để xử lý logic side effect khi component được render hoặc update
+} from 'react'
 
-/** Firebase component (authentication, storage, firestore) */
-import { projectAuth, projectStorage, projectFirestore } from '../firebase/config'  
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';      // dịch vụ xác minh người dùng
-import { doc, setDoc } from 'firebase/firestore';                                   // dịch vụ hỗ trợ lưu trữ collection                    
+/** Firebase component */
+import { 
+  projectAuth,        // Kết nối tới dịch vụ Firebase Authentication
+  projectStorage,     // Kết nối tới dịch vụ Firebase Storage
+  projectFirestore    // Kết nối tới dịch vụ Firestore database 
+} from '../firebase/config'                
+import { 
+  createUserWithEmailAndPassword,// Firebase SDK xử lý đăng nhập với email và mật khẩu
+  updateProfile       // Firebase SDK xử lý update thông tin tài khoản
+} from 'firebase/auth'  
+import { 
+  doc,      // Tạo tham chiếu đến 1 document trong Firestore
+  setDoc    // Cập nhật nội dung của 1 document hiện có trong Firestore
+} from 'firebase/firestore'               
 
 /** Custom hooks */
 import { useAuthContext } from './useAuthContext'   // Hooks để sủ dụng context chứa xác minh người dùng
@@ -57,7 +70,7 @@ export const useSignup = () => {
     setIsPending(true)          // bật cờ báo đang làm việc với firebase
   
     let photoURL = null         // component chứa URL của ảnh
-
+  
     try {
       /**   hàm tạo tài khoản mới với email và password của dịch vụ firebase authentication
        * @res   component liên kết với thông tin tài khoản trên firebase

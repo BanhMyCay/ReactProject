@@ -1,11 +1,11 @@
 /**
  * @title     Sign up page
- * @brief     Component sign up page of The Dojo project
+ * @brief     Component sign up page of MyMoney project
  * @filename  Signup.js
  ----------------------------------------------------------------------------- 
- * @author
- * @nation
- * @date 
+ * @author    BanhMyCay
+ * @nation    VietNam
+ * @date      03/06/2025
  */
 
 
@@ -162,7 +162,7 @@ export default function Signup() {
            */}
           {thumbnailError && <div className="error">{thumbnailError}</div>}
         </label>
-
+              
         {/** thẻ button nút đăng ký, chỉ click được khi không làm việc với database (isPending)
          *                      @class
         */}

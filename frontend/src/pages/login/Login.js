@@ -1,11 +1,11 @@
 /**
  * @title     Login page
- * @brief     Component login page of The Dojo project
+ * @brief     Component login page of MyMoney project
  * @filename  Login.js
  ----------------------------------------------------------------------------- 
- * @author
- * @nation
- * @date 
+ * @author    BanhMyCay
+ * @nation    VietNam
+ * @date      03/06/2025
  */
 
 

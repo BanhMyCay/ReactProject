@@ -3,9 +3,9 @@
  * @brief     Index, origin startup of MyMoney project
  * @filename  Index.js
  ----------------------------------------------------------------------------- 
- * @author
- * @nation
- * @date 
+ * @author    BanhMyCay
+ * @nation    VietNam
+ * @date      02/06/2025
  */
 
 
@@ -35,7 +35,7 @@ import './index.css';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <AuthContextProvider>
-      <App />
+        <App />
     </AuthContextProvider>
 );
 
