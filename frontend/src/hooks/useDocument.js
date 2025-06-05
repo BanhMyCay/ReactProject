@@ -26,8 +26,8 @@ import {
   onSnapshot    // Lắng nghe sự thay đổi dữ liệu realtime.
 } from 'firebase/firestore' // dịch vụ database (firestore) của firebase
 
-/** Axios component */
-import axios from "axios";  // thư viện HTTP client giúp bạn gửi request và nhận response từ một server  
+/** Backend API modules */   
+import axios from "axios";  // Axios modules, HTTP client, giúp gửi các request (GET, POST, PUT, DELETE,...) đến server khác.
 
 
 
@@ -39,12 +39,14 @@ import axios from "axios";  // thư viện HTTP client giúp bạn gửi request
  * @Arg2  id        - id của document
  * @Arg3  typeDB    - loại database (false-firestore/true-mongoDB)
  * @Ret1  document  - component liên kết với document
- * @Ret2  error     - component lỗi khi sử dụng hook
+ * @Ret2  isPending - component cờ báo đang làm việc với database
+ * @Ret3  error     - component lỗi khi sử dụng hook
  * 
 */
 export const useDocument = (collection, id, typeDB = false) => {
   const [document, setDocument] = useState(null)    // component liên kết với document
   const [error, setError] = useState(null)          // component lỗi khi sử dụng hook
+  const [isPending, setIsPending] = useState(false) // component cờ báo đang làm việc với database
 
   /** Sử dụng hooks useEffect để lấy dữ liệu document trên database
    * @dependency1   collection  - tên collection cần sử dụng
@@ -58,10 +60,14 @@ export const useDocument = (collection, id, typeDB = false) => {
      * @note  @async và @await để sử dụng các hàm bất đồng bộ khi làm việc với backend
      */
     const fetchDocument1 = async () => {
+      setIsPending(true)  // bật cờ báo đang làm việc với firebase
+
       try {
         /** Component 'url' chứa địa chỉ gọi API, VD: /api/products */
-        const response = await axios.get(`/api/documents/${collection}/${id}`)
+        const response = await axios.get(`/api/${collection}/${id}`)
         
+
+        setIsPending(false)   // clear cờ báo đang làm việc với database
         if (response.data) {  // Nếu response có dữ liệu
           setDocument({ ...response.data, id }) // Cập nhật state 'document' với dữ liệu trả về từ MongoDB.
           setError(null)      // Xóa lỗi cũ (nếu có)
@@ -69,7 +75,8 @@ export const useDocument = (collection, id, typeDB = false) => {
           setError("No such document exists")
         }
       } catch (err) {   // Nếu xảy ra lỗi trong quá trình gọi API:
-        console.log(err.message)          // log lỗi
+        setIsPending(false)         // clear cờ báo đang làm việc với database
+        console.log(err.message)    // log lỗi
         setError("Failed to get document")// Cập nhật state 'error' với thông báo lỗi.
       }
     }
@@ -118,6 +125,6 @@ export const useDocument = (collection, id, typeDB = false) => {
 
   }, [collection, id, typeDB])
 
-  return { document, error }
+  return { document, isPending, error }
 }
 

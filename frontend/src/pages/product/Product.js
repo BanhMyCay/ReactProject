@@ -1,7 +1,7 @@
 /**
- * @title     Project page
- * @brief     Component Project page of The Dojo project
- * @filename  Project.js
+ * @title     product page
+ * @brief     Component product page of My Store project
+ * @filename  Product.js
  ----------------------------------------------------------------------------- 
  * @author
  * @nation
@@ -19,31 +19,33 @@ import { useParams } from "react-router-dom"
 /** Custom hooks */
 import { useDocument } from '../../hooks/useDocument'
 
+
 /** Page components */
-import ProjectSummary from "./ProjectSummary"     // component chứa nội dung của project page
-import ProjectComments from "./ProjectComments"   // component chứa ô comment cho project page
+import ProductSummary from "./ProductSummary"     // component chứa nội dung của product page
+import ProductComments from "./ProductComments"   // component chứa ô comment cho product page
+
 
 /** Styles */
-import './Project.css'
+import './Product.css'
 
 
 
 /** -------------------------------------------------------------------------- 
   @COMPONENT_FUNCTIONS -------------------------------------------------------
 --------------------------------------------------------------------------- */
-/** Project page component */
-export default function Project() {
+/** Product page component */
+export default function Product() {
   /** object chứa các component liên kết với hooks (useParams) để lấy thuộc tính 
    *  sau đuôi URL /:<properties> 
    */
   const { id } = useParams()
 
   /** object chứa các components liên kết với hooks để sử dụng document có id 'id' của 
-   *  collection 'projects' trên firestore của firebase 
+   *  collection 'products' trên firestore của firebase 
    * @document  component liên kết với document
    * @error     component lỗi khi sử dụng hook
    */
-  const { document, error } = useDocument('projects', id)
+  const { document, error } = useDocument('products', id, true)
 
   if (error) {    // nếu lỗi trả về thẻ báo lỗi
     return <div className="error">{error}</div>
@@ -53,15 +55,15 @@ export default function Project() {
   }
 
   return (
-    /** thẻ div đại diện Project page 
+    /** thẻ div đại diện Product page 
      *   @class
      */
-    <div className="project-details">
-      {/** ProjectSummary component hiển thị chi tiêt project */}
-      <ProjectSummary project={document} />
+    <div className="product-details">
+      {/** ProductSummary component hiển thị chi tiêt product */}
+      <ProductSummary product={document} />
 
-      {/** ProjectComments component để bình luận về project */}
-      <ProjectComments project={document} />
+      {/** ProductComments component để bình luận về product */}
+      <ProductComments product={document} />
     </div>
   )
 }

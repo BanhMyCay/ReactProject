@@ -79,7 +79,7 @@ const mongoReducer = (state, action) => {
  * @Ret3  updateDocument    - hàm sửa một mục document
  * @Ret4  response          - object respone của hooks
 */
-export const useMongo  = (colName) => {
+export const useMongoDB  = (colName) => {
   /**   object chứa respone của hooks sử dụng dịch vụ database sử dụng hook useReducer
    * @response      tên object
    * @dispatch      tên hàm đăng ký gắn giá trị object với return hàm firestoreReducer
@@ -132,11 +132,6 @@ export const useMongo  = (colName) => {
     dispatch({ type: 'IS_PENDING' })
 
     try {
-      /**   hàm lấy thời gian hiện tại
-       * @createdAt      component chưa thời gian hiện tại
-       */ 
-      const createdAt = new Date()
-
       /**   hàm xóa một document trên database
        * @res   phản hồi từ backend
        */ 
@@ -165,7 +160,7 @@ export const useMongo  = (colName) => {
       /**   hàm sửa (update) một document có id 'id' theo nội dung 'updates' lên database 
        * @res   phản hồi từ backend
        */ 
-      const res = await axios.put(`/api/${colName}/${id}`, updates)
+      const res = await axios.patch(`/api/${colName}/${id}`, updates)
 
       /** thay đổi object respone của hooks khi sửa một document */
       dispatchIfNotCancelled({ type: "UPDATED_DOCUMENT", payload: res.data })

@@ -73,7 +73,7 @@ export default function Sidebar() {
               * @NavLink URL đến các page
               */}
             <li>
-              <NavLink exact to="/">
+              <NavLink to="/">
                 {/** thẻ img chứa logo của Dashboard
                   *  @src ảnh            @alt tiêu đề
                   */}
@@ -90,9 +90,9 @@ export default function Sidebar() {
                 {/** thẻ img chứa logo của create page
                   *  @src ảnh            @alt tiêu đề
                   */}
-                <img src={AddIcon} alt="add project icon" />
+                <img src={AddIcon} alt="add product icon" />
                 {/* thẻ span chứa tiêu đề create page */}
-                <span>New Project</span>
+                <span>New Product</span>
               </NavLink>
             </li>
           </ul>

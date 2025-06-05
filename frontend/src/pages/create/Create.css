@@ -1,3 +1,7 @@
 .create-form {
   max-width: 600px;
 }
+.create p {
+  margin-top: 10px;
+  font-size: 0.8em;
+}

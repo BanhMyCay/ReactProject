@@ -1,0 +1,78 @@
+.product-list {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17.5%, 17.5%));
+  grid-gap: 30px;
+}
+.product-list .product-form {
+  position: relative; /* 👈 thêm dòng này */
+  width: 100%;
+  background-color: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.05);
+  color: inherit;
+  padding-bottom: 80px; /* 👈 chừa đủ cho cả price + btn */
+}
+
+.product-form a {
+  text-decoration: none;
+}
+
+.product-list h4 {
+  font-size: 0.9em;
+  color: var(--heading-color);
+}
+.product-list p {
+  color: var(--text-color);
+  font-size: 0.9em;
+}
+.product-list .assigned-to {
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+.product-list ul {
+  margin: 10px 0;
+  display: flex;
+}
+.product-list li {
+  margin-right: 10px;
+}
+.product-list img {
+  width: 100%;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.product-list .btn {
+  position: absolute; /* 👈 cần thiết để neo vào góc */
+  bottom: 12px;        /* cách đáy 12px */
+  left: 12px;          /* cách trái 12px */
+
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.product-list .price {
+  position: absolute;
+  bottom: 50px; /* 👈 nằm ngay trên nút (nút ở 12px => cách ra khoảng 38px) */
+  left: 12px;
+  font-weight: bold;
+  font-size: 15px;
+  color: #222;
+  background: #f9f9f9;
+  padding: 4px 10px;
+  border-radius: 999px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}

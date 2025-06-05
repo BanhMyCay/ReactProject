@@ -98,7 +98,7 @@ async function init_mongoDb() {
     const response = await fetch(process.env.SOURCE_DATABASE_URL);
     const dataSource = await response.json();
 
-    if (!dataSource) {  // Nếu không lấy được dữ liệu sản phẩm, log lỗi.
+    if (!dataSource && !dataSource.products) {  // Nếu không lấy được dữ liệu sản phẩm, log lỗi.
       console.log("Cannot get source database");
       return false;
     }
@@ -116,6 +116,8 @@ async function init_mongoDb() {
       "http://localhost:" + process.env.PORT + "/api/products/"
     );
 
+    console.log(result.data);
+
     /** Vòng for xóa từng documents của "products" collection */
     for (let i = 0; i < result.data.length; i++) {
       /** Hàm tạo request delete đến địa chỉ "/api/products"
@@ -126,13 +128,13 @@ async function init_mongoDb() {
         "http://localhost:" +
         process.env.PORT +
         "/api/products/" +
-        result.data[i]._id
+        result.data[i].id
       );
     }
 
     /** Vòng for tạo 10 documents mới cho "products" collection */
     for (let i = 0; i < process.env.DATABASE_LENGTH; i++) {
-      data = dataSource.products[i];  // component object chứa thông tin từng sản phẩm
+      const data = dataSource.products[i];  // component object chứa thông tin từng sản phẩm
       
       /** Hàm tạo request post đến địa chỉ "/api/products"
        *  Tạo document mới lên "products" collection trong MongoDB
@@ -142,11 +144,29 @@ async function init_mongoDb() {
       const result = await axios.post(
         "http://localhost:" + process.env.PORT + "/api/products/",
         {
-          productId:  data.id,        // id sản phẩm
-          title:      data.title,     // tiêu đề sản phẩm
+          id:         data.id,        // id sản phẩm
+          name:       data.title,     // tiêu đề sản phẩm
+          details:    data.description,// mô tả sản phẩm
           category:   data.category,  // phân loại hàng hóa
           price:      data.price,     // giá sản phẩm
           image:      data.images,    // ảnh sản phẩm
+          createdBy: {
+            displayName:  "BanhMyCay",
+            id: "tcDWSJANQCbIhzimB03RMJbUI9h1",
+            photoURL: null
+          },
+          comments:   [{
+            content:    "rất tốt",
+            displayName: "BanhMyCay",
+            id:   0.8658588228800707,
+            photoURL: null,       
+          },
+          {
+            content:    "đồ xịn",
+            displayName: "BanhMyCay",
+            id:   0.8658523228800707,
+            photoURL: null,       
+          }]
         }
       );
     }
@@ -177,12 +197,12 @@ mongoose.connect(process.env.MONGO_URI)
      *  "async/await" để xử lý các hàm bất đồng bộ
      * @Arg1  initDatabase - trạng thái hàm 
      */
-    const initDatabase = await init_mongoDb();
-    if (initDatabase) { // init dữ liệu trên MongoDB thành công, log trạng thái
-      console.log("Init database OK!");
-    } else {   // init dữ liệu trên MongoDB thất bại, log trạng thái
-      console.log("Failed to init database");
-    }
+    // const initDatabase = await init_mongoDb();
+    // if (initDatabase) { // init dữ liệu trên MongoDB thành công, log trạng thái
+    //   console.log("Init database OK!");
+    // } else {   // init dữ liệu trên MongoDB thất bại, log trạng thái
+    //   console.log("Failed to init database");
+    // }
   })
   .catch((err) => {   // hàm xử lý khi kết nối có lỗi xảy ra
     console.log(err)  // log lỗi

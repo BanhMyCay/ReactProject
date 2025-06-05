@@ -28,8 +28,8 @@ import {
   onSnapshot                // Lắng nghe sự thay đổi dữ liệu realtime.
 } from 'firebase/firestore' // dịch vụ database (firestore) của firebase
 
-/** Backend API modules */
-const axios = require("axios");     // Axios modules, HTTP client, giúp gửi các request (GET, POST, PUT, DELETE,...) đến server khác.
+/** Backend API modules */   
+import axios from "axios";  // Axios modules, HTTP client, giúp gửi các request (GET, POST, PUT, DELETE,...) đến server khác.
 
 
 
@@ -42,11 +42,13 @@ const axios = require("axios");     // Axios modules, HTTP client, giúp gửi c
  * @Arg3  _orderBy    - array chứa yêu cầu properties để sắp xếp documents
  * @Arg4  typeDB      - loại database (false-firestore/true-mongoDB)
  * @Ret1  documents   - component chứa các documents của collection
- * @Ret2  error       - component chuỗi ký tự báo lỗi
+ * @Ret2  isPending - component cờ báo đang làm việc với database
+ * @Ret3  error       - component chuỗi ký tự báo lỗi
  */
 export const useCollection = (colName, _query, _orderBy, typeDB = false) => {
   const [documents, setDocuments] = useState(null)  // component chứa các documents của collection
   const [error, setError] = useState(null)          // component chuỗi ký tự báo lỗi
+  const [isPending, setIsPending] = useState(false) // component cờ báo đang làm việc với database
 
   /** component thay thế array (useRef) để khi sử dụng useEffect không tạo vòng lập tuần hoàn
    *  _query là một array, mỗi lần re-evaluate sẽ tạo mới ở địa chỉ khác của bộ nhớ 
@@ -67,6 +69,8 @@ export const useCollection = (colName, _query, _orderBy, typeDB = false) => {
      * @note  @async và @await để sử dụng các hàm bất đồng bộ khi làm việc với backend
      */
     const fetchCollection1 = async () => {
+      setIsPending(true)  // bật cờ báo đang làm việc với firebase
+
       try {
         /** Component 'url' chứa địa chỉ gọi API, VD: /api/products */
         let url = `/api/${colName}`;
@@ -88,14 +92,17 @@ export const useCollection = (colName, _query, _orderBy, typeDB = false) => {
           url += "?" + params.toString();
         }
 
-        /** Gửi GET request đến API, phản hổi lưu vào component 'response' */
+        /** Gửi GET request đến API, phản hổi lưu vào component "response" */
         const response = await axios.get(url);
-
+        const data = response.data; // lấy dữ liệu collection từ "response"
+        
         /** Nếu thành công: cập nhật state 'documents' bằng dữ liệu nhận được và Xóa lỗi trước đó nếu có */
-        setDocuments(response.data);
+        setDocuments(data);
+        setIsPending(false) // clear cờ báo đang làm việc với database
         setError(null);
       } catch (err) {       // Nếu lỗi xảy ra khi gọi API:
         console.log(err);   // log lỗi
+        setIsPending(false) // clear cờ báo đang làm việc với database
         setError("Could not fetch the data from MongoDB API."); // báo lỗi
         setDocuments(null); // Xóa dữ liệu hiện có (nếu có).
       }
@@ -172,5 +179,5 @@ export const useCollection = (colName, _query, _orderBy, typeDB = false) => {
 
   }, [colName, query, orderBy, typeDB])
 
-  return { documents, error }
+  return { documents, isPending, error }
 }

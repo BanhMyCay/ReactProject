@@ -1,0 +1,174 @@
+.cartContainer {
+  width: 350px;
+  min-width: 350px; 
+  padding: 30px;
+  position: sticky;
+  top: 0; /* hoặc top: 80px nếu bạn có header */
+  background: white;
+  box-sizing: border-box;
+  z-index: 10;
+  color: var(--heading-color);
+}
+
+.cartContainer h2 {
+  text-align: right;
+  margin-bottom: 40px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 1.2em;
+}
+
+.cartContainer .cartList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cartContainer .cartItem {
+  position: relative; /* 🔁 Làm mốc cho deleteButton */
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 12px;
+}
+
+.cartContainer .productImage {
+  width: 64px;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 8px;
+}
+
+.cartContainer .details {
+  flex: 1;
+}
+
+
+
+.cartContainer .name {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.cartContainer .amount {
+  position: absolute;    /* 🔥 Dùng định vị tuyệt đối */
+  bottom: 36px;             /* hoặc chỉnh tùy ý theo khoảng cách */
+  right: 12px;           /* cách lề phải */
+
+  width: auto;
+  text-align: right;
+  font-weight: bold;
+  color: green;
+}
+
+.cartContainer .deleteButton {
+  position: absolute; /* 🔥 Định vị tuyệt đối */
+  bottom: 6px;
+  right: 6px;
+  
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #888;
+  transition: color 0.2s ease;
+}
+
+.cartContainer .deleteButton:hover {
+  color: #e11d48; /* đỏ nhạt */
+}
+
+.cartContainer .quantityControl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 24px;
+  width: fit-content;
+  border-radius: 999px;
+}
+
+.quantityControl button {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: #f0f0f0;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  border-radius: 0;
+  flex-shrink: 0; /* 🔥 QUAN TRỌNG: ngăn không cho button giãn ra */
+}
+
+.quantityControl button:hover {
+  background: #e2e2e2;
+}
+
+.quantityControl span {
+  min-width: 30px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 36px;
+  background: #fff;
+  font-weight: 500;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.quantityControl .quantityInput {
+  min-width: 30px;
+  width: 30px;
+  height: 24px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  background: #fff;
+  border: none;
+  outline: none;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* Ẩn mũi tên tăng giảm */
+.quantityInput::-webkit-outer-spin-button,
+.quantityInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.quantityInput[type=number] {
+  -moz-appearance: textfield;
+}
+
+.cartContainer .totalCostBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #fef3c7, #fde68a); /* vàng nhạt bắt mắt */
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  font-size: 16px;
+  font-weight: 500;
+  color: #4b3c06; /* nâu đậm, nổi bật */
+  margin-top: 24px;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto; /* căn giữa */
+  
+  
+  transition: all 0.3s ease;
+}
+.totalCostBox strong {
+  font-size: 20px; /* số tiền to hơn */
+  font-weight: 700;
+}
+

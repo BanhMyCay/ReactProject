@@ -1,7 +1,7 @@
 /**
- * @title     Dashboard page (ProjectFilter)
- * @brief     Component ProjectFilter của dashboard page of The Dojo project
- * @filename  ProjectFilter.js
+ * @title     Dashboard page (ProductFilter)
+ * @brief     Component ProductFilter của dashboard page of My Store project
+ * @filename  ProductFilter.js
  ----------------------------------------------------------------------------- 
  * @author
  * @nation
@@ -16,23 +16,26 @@
 /** React component (useState) */
 import { useState } from 'react'
 
+/** Styles */
+import './Dashboard.css'
+
 
 
 /** -------------------------------------------------------------------------- 
   @COMPONENT -----------------------------------------------------------------
 --------------------------------------------------------------------------- */
 /** component array chứa các từ để lọc */
-const filterList = ['all', 'mine', 'development', 'design', 'marketing', 'sales']
+const filterList = ['all', 'beauty', 'fragrances', 'furniture', 'groceries']
 
 
 
 /** -------------------------------------------------------------------------- 
   @COMPONENT_FUNCTIONS -------------------------------------------------------
 --------------------------------------------------------------------------- */
-/** ProjectFilter của dashboard page of The Dojo project 
+/** ProductFilter của dashboard page 
  * @Arg1  changeFilter  - hàm để thay đổi từ lọc
  */
-export default function ProjectFilter({ changeFilter }) {
+export default function ProductFilter({ changeFilter }) {
   const [currentFilter, setCurrentFilter] = useState('all') // component tạm lưu từ để lọc
 
   /** xử lý khi chọn từ để lọc khác */
@@ -43,7 +46,7 @@ export default function ProjectFilter({ changeFilter }) {
 
   return (
     /** thẻ div đại diện bộ lọc */
-    <div className="project-filter">
+    <div className="product-filter">
       {/** thẻ nav chứa bảng bộ lọc */}
       <nav>
         {/** thẻ p chứa tiêu đề bộ lọc */}

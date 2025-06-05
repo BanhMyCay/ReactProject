@@ -52,14 +52,14 @@ const getProduct = async (req, res) => {
   const { id } = req.params;
 
   /** Nếu id không hợp lệ (không phải ObjectId của MongoDB) thì trả về lỗi 404 */
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "No such product" });
-  }
+  // if (!mongoose.Types.ObjectId.isValid(id)) {
+  //   return res.status(404).json({ error: "No such product" });
+  // }
 
   /** Hàm lấy 1 document theo id "Product.findById(id)" trong "products" collection
    * @Ret1  "product" - component lưu document
    */
-  const product = await Product.findById(id);
+  const product = await Product.findOne({ id });
 
   /** Nếu không lấy được document: trả về lỗi. */
   if (!product) {
@@ -77,7 +77,7 @@ const getProduct = async (req, res) => {
  */
 const createProduct = async (req, res) => {
   /** object chứa các biến trạng thái từ request để tạo document */
-  const { productId, title, category, price, image } = req.body;
+  const { id, name, details, category, price, image, createdBy, comments } = req.body;
 
   try {
     /** Hàm tạo 1 document "Product.create" trong "products" collection
@@ -85,11 +85,14 @@ const createProduct = async (req, res) => {
      * @Ret1  "product" - component lưu document
      */
     const product = await Product.create({
-      productId,
-      title,
+      id,
+      name,
+      details,
       category,
       price,
       image,
+      createdBy,
+      comments
     });
 
     /** Nếu tạo thành công, trả về JSON của document với HTTP status 200 OK */
@@ -110,15 +113,15 @@ const deleteProduct = async (req, res) => {
   const { id } = req.params;
 
   /** Nếu id không hợp lệ (không phải ObjectId của MongoDB) thì trả về lỗi 404 */
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "No such product" });
-  }
+  // if (!mongoose.Types.ObjectId.isValid(id)) {
+  //   return res.status(400).json({ error: "No such product" });
+  // }
 
   /** Hàm xóa 1 document theo id "Product.findOneAndDelete" trong "products" collection
    * @Arg1  "{_id: id}" - id của document
    * @Ret1  "product" - component lưu document trước khi xóa
    */
-  const product = await Product.findOneAndDelete({ _id: id });
+  const product = await Product.findOneAndDelete({ id });
 
   /** Nếu không lấy được document: trả về lỗi. */
   if (!product) {
@@ -139,9 +142,9 @@ const updateProduct = async (req, res) => {
   const { id } = req.params;
 
   /** Nếu id không hợp lệ (không phải ObjectId của MongoDB) thì trả về lỗi 404 */
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "No such product" });
-  }
+  // if (!mongoose.Types.ObjectId.isValid(id)) {
+  //   return res.status(400).json({ error: "No such product" });
+  // }
 
   /** Hàm sửa document theo id ('Product.findOneAndUpdate') trong MongoDB 'Product.create'
    *  Component 'product' tạm chứa document tìm được (chưa sửa)
@@ -154,7 +157,7 @@ const updateProduct = async (req, res) => {
    * @Ret1  "product" - component lưu document trước khi xóa
    */
   const product = await Product.findOneAndUpdate(
-    { _id: id },
+    { id },
     {
       ...req.body,
     }

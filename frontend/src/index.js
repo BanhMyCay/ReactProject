@@ -1,6 +1,6 @@
 /**
  * @title     Index
- * @brief     Index, origin startup of MyMoney project
+ * @brief     Index, origin startup of My Store project
  * @filename  Index.js
  ----------------------------------------------------------------------------- 
  * @author    BanhMyCay
@@ -18,7 +18,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 /** Components */
-import App from './App';                                        // App (main) components of MyMoney project
+import App from './App';                                        // App (main) components of My Store project
 
 /** Provider context */
 import { AuthContextProvider } from './context/AuthContext';    // Provider context chứa xác minh người dùng

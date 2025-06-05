@@ -1,6 +1,6 @@
 /**
  * @title     App component
- * @brief     App (main) components of MyMoney project
+ * @brief     App (main) components of My Store project
  * @filename  App.js
  ----------------------------------------------------------------------------- 
  * @author    BanhMyCay
@@ -29,7 +29,7 @@ import Dashboard from "./pages/dashboard/Dashboard"
 import Create from "./pages/create/Create"
 import Login from "./pages/login/Login"                   // Login page
 import Signup from "./pages/signup/Signup"                // Sign up page
-import Project from "./pages/project/Project"
+import Product from "./pages/product/Product"
 
 /** Custom hooks */
 import { useAuthContext } from "./hooks/useAuthContext"; // Hooks để sủ dụng context chứa xác minh người dùng
@@ -37,7 +37,7 @@ import { useAuthContext } from "./hooks/useAuthContext"; // Hooks để sủ d�
 /** Custom Components */
 import Navbar from './components/Navbar'                  // Navigation bar
 import Sidebar from './components/Sidebar'                // Side bar
-import OnlineUsers from './components/OnlineUsers'        // User list bar
+import CartUsers from './components/CartUsers'            // User cart bar
 
 /** Styles */
 import './App.css'
@@ -95,12 +95,12 @@ function App() {
                 user ? <Create /> : <Navigate to="/login" replace />
               }/>
 
-              {/** URL path: "/projects/:id" mở project page component theo id 
+              {/** URL path: "/products/:id" mở product page component theo id 
                 *  Nếu chưa đăng nhập tài khoản, chuyển hướng URL: "/login"
-                *  Nếu đã đăng nhập tài khoản, mở project page component 
+                *  Nếu đã đăng nhập tài khoản, mở product page component 
                 */}
-              <Route path="/projects/:id" element={
-                user ? <Project /> : <Navigate to="/login" replace />
+              <Route path="/products/:id" element={
+                user ? <Product /> : <Navigate to="/login" replace />
               }/>
 
             {/** URL path: "/login"
@@ -125,7 +125,7 @@ function App() {
           </div>
 
           {/* User list bar component, chỉ hiển thị khi đã log in */}
-          {user && <OnlineUsers />}
+          {user && <CartUsers />}
 
         </BrowserRouter>
       )}
